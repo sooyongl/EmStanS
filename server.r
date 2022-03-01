@@ -1,3 +1,8 @@
+# Shiny token -------------------------------------------------------
+rsconnect::setAccountInfo(name='creativemeasurementsolutionsllc',
+                          token='18CBE63023FF268303FD90AB285F187C',
+                          secret='49JXMnwDcc3R/MzQQKZfjTchJZiA6aD/6ww9R0o9')
+
 shiny_server <- function(input, output, session) {
   #
   # Data part ------------------------------------------

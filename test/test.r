@@ -24,7 +24,7 @@ data_path <- file.path(root, "test/data")
 for(i in 1:length(source_files)) { source(source_files[i])}
 
 filePath <- fs::dir_ls(data_path)[1]
-library(data.table)
+
 
 # Test run ------------------------------------------------
 new_data <- read.csv(filePath)

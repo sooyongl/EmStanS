@@ -7,7 +7,7 @@ source_files <- fs::dir_ls(file.path(root, "R"))
 data_path <- file.path(root, "test/data")
 
 
-for(i in 1:length(source_files)) { source(source_files[i])}
+# for(i in 1:length(source_files)) { source(source_files[i])}
 
 filePath <- fs::dir_ls(data_path)[1]
 data <- read.csv(filePath)
@@ -15,7 +15,7 @@ data[[1]] <- 1:nrow(data)
 names(data) <- c("OOD","location","ALD")
 
 a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
-
+launchEmStanS()
 library(data.table)
 library(mgcv)
 library(tidymv)
