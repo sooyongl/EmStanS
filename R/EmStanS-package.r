@@ -15,6 +15,7 @@
 #' @import tidymv
 #' @importFrom magrittr `%>%`
 #' @importFrom purrr set_names
+#' @importFrom utils browseURL write.csv read.csv
 #' @keywords package
 NULL
 

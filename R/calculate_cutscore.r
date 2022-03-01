@@ -3,10 +3,11 @@
 calCountWeight <- function(new_data, n_cut = 3, d_alpha = 1, SD = 1, empirical = T, EC = 0) {
 
   new_data <- new_data %>%
-    mutate(ALD = as.numeric(str_remove(ALD, "Level")))
+    mutate(ALD = str_remove(ALD, "Level")) %>%
+    mutate_all(as.numeric)
 
   temp1 <- map(2:n_cut,
-               ~ .calCW(new_data, d_alpha, cut_level = .x, SD, EC = EC, empirical = empirical))
+               ~ .calCW(new_data, d_alpha, cut_level = .x, SD = SD, EC = EC, empirical = empirical))
 
   incon_default <- map(temp1, ~ .x[["incon_default"]]) %>%
     map2(., 2:n_cut,~ .x %>% set_names("cut_score", paste0("L",.y, "_C"),paste0("L",.y,"_W"))) %>%

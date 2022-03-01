@@ -42,7 +42,7 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
     data$ALD <- as.character(factor(data$ALD, labels = paste0("Level",1:length(lvname))))
   }
 
-  cut_scores <- calCountWeight(data)
+  cut_scores <- calCountWeight(new_data = data, n_cut = length(lvname))
 
   cut_scores <-
     cut_scores %>%
