@@ -75,12 +75,14 @@ shiny_ui <- function() {
                fluidRow(
                  # verbatimTextOutput("results")
                  tabsetPanel(
-                   tabPanel("Model Fit", DTOutput("result0")),
-                   downloadButton("ess_weight", "Download"),
+                   tabPanel("Model Fit",
+                            downloadButton("ess_weight", "Download"),
+                            DTOutput("result0")),
 
-                   tabPanel("Review",    DTOutput("result1")),
-                   downloadButton("review", "Download"),
-
+                   tabPanel("Review",
+                            downloadButton("review", "Download"),
+                            DTOutput("result1")
+                   )
                  )
                )
       )
@@ -172,7 +174,7 @@ shiny_server <- function(input, output, session) {
       inpdata <-
         genFakeData(
           fun = 'runif',
-          cor_value = cor_val,
+          cor_value = cor_value,
           nlevel = nlevel,
           n = nitem,
           100,
@@ -181,6 +183,15 @@ shiny_server <- function(input, output, session) {
 
     return(inpdata)
   })
+
+  observeEvent(imprt_data(), {
+
+    output$gen_data <- renderDT({
+      imprt_data()})
+  })
+
+
+
 
   output$sim_data_down <- downloadHandler(
     filename = function() {
@@ -193,23 +204,30 @@ shiny_server <- function(input, output, session) {
 
 
   res_emstans <- eventReactive(input$run1, {
+
     if(input$empirical == "empirical") {
-      lvname      <- input$lvname
+      lvname <- input$lvname
+      lvname <- str_remove_all(lvname, " ")
+      lvname <- str_split(lvname, ",", simplify = T)[1,]
+
     } else {
-      lvname      <- paste0("Level",input$nlevel)
+      lvname <- paste0("Level",1:input$nlevel)
     }
 
-    emstans(data = imprt_data(), lvname = lvname)
+    res <- emstans(data = imprt_data(), lvname = lvname)
+    # res <- emstans(data = inpdata, lvname = lvname)
+    res[[1]]
+    return(res)
   })
 
 
   observeEvent(input$run1, {
 
-    output$results0 <- renderDT({
-      res_emstans()[[1]]
+    output$result0 <- renderDT({
+      DT::datatable(res_emstans()[[1]])
     })
 
-    output$results1 <- renderDT({
+    output$result1 <- renderDT({
       res_emstans()[[2]]
     })
 
