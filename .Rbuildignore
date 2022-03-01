@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^test
 ^README
+^server.r
+^ui.r
