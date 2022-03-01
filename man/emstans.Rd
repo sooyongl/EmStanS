@@ -2,13 +2,43 @@
 % Please edit documentation in R/main.r
 \name{emstans}
 \alias{emstans}
-\title{Conduct Embeded Standard Setting}
+\title{Conduct Embedded Standard Setting}
 \usage{
 emstans(data, lvname = NULL, WESS = T, GAM = T, SD = 1, EC = 0, digits = 3)
 }
+\arguments{
+\item{data}{a data frame containing OOD, location, and ALD. The data should
+be ordered by OOD, location, and ALD.
+\itemize{
+\item{OOD} Order of difficulty
+\item{location} Location
+\item{ALD} Aligned levels
+}}
+
+\item{lvname}{a vector indicating levels}
+
+\item{WESS}{a logical indicating the use of weights. (default = \code{TRUE})}
+
+\item{GAM}{a logical indicating the use of nonlinear fitting.
+(default = \code{TRUE})}
+
+\item{SD}{a numeric indicating standard deviation. (default = 1)}
+
+\item{EC}{a numeric. (default = 0)}
+
+\item{digits}{a numeric. (default = 3)}
+}
+\value{
+a list.
+}
 \description{
-Conduct Embeded Standard Setting
+Conduct Embedded Standard Setting
+}
+\details{
+This calculates counts and weights.
 }
 \examples{
-a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
+\dontrun{
+fit <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
+}
 }

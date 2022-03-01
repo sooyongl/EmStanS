@@ -1,12 +1,26 @@
 Package: EmStanS
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Embedded Standard Setting
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Sooyong Lee
+Maintainer: Sooyong Lee <sooyongl09@utexas.edu>
+Description: Embedded standard setting (EmStanS) to calculate counts and weights
+Depends:
+    R (>= 3.6.0)
+Imports: 
+    dplyr,
+    tidyr,
+    stringr,
+    magrittr,
+    purrr,
+    data.table,
+    foreach
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
+VignetteBuilder: knitr

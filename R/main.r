@@ -1,7 +1,28 @@
-#' Conduct Embeded Standard Setting
+#' Conduct Embedded Standard Setting
+#'
+#' @param data a data frame containing OOD, location, and ALD. The data should
+#' be ordered by OOD, location, and ALD.
+#' \itemize{
+#' \item{OOD} Order of difficulty
+#' \item{location} Location
+#' \item{ALD} Aligned levels
+#' }
+#' @param lvname a vector indicating levels
+#' @param WESS a logical indicating the use of weights. (default = \code{TRUE})
+#' @param GAM a logical indicating the use of nonlinear fitting.
+#' (default = \code{TRUE})
+#' @param SD a numeric indicating standard deviation. (default = 1)
+#' @param EC a numeric. (default = 0)
+#' @param digits a numeric. (default = 3)
+#'
+#' @return a list.
+#'
+#' @details This calculates counts and weights.
 #'
 #' @examples
-#' a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
+#' \dontrun{
+#' fit <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
+#' }
 #' @export
 emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
                     SD = 1, EC = 0, digits= 3) {
@@ -16,6 +37,9 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
     } else {
       data$ALD <- paste0("Level", data$ALD)
     }
+  } else {
+    data$ALD <- factor(data$ALD, levels = lvname)
+    data$ALD <- as.character(factor(data$ALD, labels = paste0("Level",1:length(lvname))))
   }
 
   cut_scores <- calCountWeight(data)
@@ -53,12 +77,6 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
            ends_with("_C"),ends_with("_W")) %>%
     rename("Aligned_Lvl" = "ALD")
 
-  # dataUse_Weight <-
-  #   dataUse_1 %>%
-  #   mutate(
-  #     weightSum = dplyr::select(., ends_with("_W")) %>% rowSums()
-  #   ) %>% pull(weightSum)
-
   target_names <- dataUse_1$ALD
   lv_name <- target_names %>% unique() %>% sort()
   #
@@ -87,13 +105,6 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
       a3
     }
 
-  # review_table <-
-  #   review_table  %>%
-  #   mutate(.,
-  #          Weight = dplyr::select(., ends_with("_W")) %>% rowSums()
-  #   )
-
-
   cs_inf <- data2 %>%
     slice(selected_CP) %>%
     select(OOD, ALD, location) %>%
@@ -111,7 +122,6 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
     rename(
       "Cut_Score_upper" = "Cut_Score"
     )
-
 
   review_table <- review_table %>%
     left_join(., cs_inf, by = c("ALD" = "ALD")) %>%

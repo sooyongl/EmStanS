@@ -27,7 +27,11 @@ filePath <- fs::dir_ls(data_path)[1]
 library(data.table)
 
 # Test run ------------------------------------------------
-new_data <- read_csv(filePath)
+new_data <- read.csv(filePath)
+
+new_data$ALD <- factor(new_data$ALD, levels = paste0("Level",1:3))
+new_data$ALD <- as.character(factor(new_data$ALD, labels = paste0("aaaaa",1:length(lvname))))
+
 count_weight <- calESS(new_data)
 
 cut_scores <-
