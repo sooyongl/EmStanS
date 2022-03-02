@@ -4,8 +4,6 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = F)
-library(EmStanS)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -34,12 +32,27 @@ The documentation is available at [here](https://sooyongl.github.io/EmStanS/).
 
 ## Usage
 
-```{r}
-data <- read.csv(filePath)
-fit <- emstans(
-  data = data, 
+```{r eval = T}
+library(EmStanS)
+```
+
+```{r eval = T}
+# data <- read.csv(filePath)
+fake_data <- genFakeData("runif",
+                         cor_value = 0.6, 
+                         nlevel = 3, 
+                         n = 50, 
+                         100, 300)
+
+head(fake_data, 20)
+```
+
+```{r eval = T}
+res <- EmStanS::emstans(
+  data = fake_data, 
   lvname = c("Level1", "Level2", "Level3")
   )
 
+res
 ```
 
