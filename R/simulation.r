@@ -1,4 +1,6 @@
 #' Generate a single data set containing ALD, OOD, and location given a correlation value
+#'
+#' @export
 genFakeData <- function(fun, cor_value, nlevel, ...) {
 
   location <- genLoc(fun, ...)
