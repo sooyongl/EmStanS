@@ -6,6 +6,20 @@
 \usage{
 calCountWeight(new_data, n_cut = 3, d_alpha = 1, SD = 1, empirical = T, EC = 0)
 }
+\arguments{
+\item{new_data}{a data frame containing location and ALD}
+
+\item{n_cut}{a numeric indicating the number of levels}
+
+\item{d_alpha}{a numeric indicating d inconsistency (default = 1).}
+
+\item{SD}{a numeric indicating a standard deviation (default = 1).}
+
+\item{empirical}{a logical indicating whether the given locations will be
+used to calculate cut scores or generated (default = T).}
+
+\item{EC}{a numeric indicating a essentially consistent cut-off value.}
+}
 \description{
 Calculate counts and weights across all levels
 }

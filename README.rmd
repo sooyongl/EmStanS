@@ -56,3 +56,13 @@ res <- EmStanS::emstans(
 res
 ```
 
+## Launch the Shiny app
+
+```{r eval = F}
+# Launch Shiny app on the local computer
+EmStanS::launchEmStanS(local = T)
+
+# Launch Shiny app on the server
+EmStanS::launchEmStanS(local = F)
+```
+

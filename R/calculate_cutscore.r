@@ -1,5 +1,13 @@
 #' Calculate counts and weights across all levels
 #'
+#' @param new_data a data frame containing location and ALD
+#' @param n_cut  a numeric indicating the number of levels
+#' @param d_alpha a numeric indicating d inconsistency (default = 1).
+#' @param SD  a numeric indicating a standard deviation (default = 1).
+#' @param empirical a logical indicating whether the given locations will be
+#' used to calculate cut scores or generated (default = T).
+#' @param EC a numeric indicating a essentially consistent cut-off value.
+#'
 calCountWeight <- function(new_data, n_cut = 3, d_alpha = 1, SD = 1, empirical = T, EC = 0) {
 
   new_data <- new_data %>%

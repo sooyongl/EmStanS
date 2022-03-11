@@ -41,6 +41,6 @@ launchEmStanS <- function(local = T) {
     }
   } else {
 
-    browseURL("https://creativemeasurementsolutionsllc.shinyapps.io/EmStanS_2022")
+    browseURL("https://creativemeasurementsolutionsllc.shinyapps.io/EmStanS_Lite")
   }
 }

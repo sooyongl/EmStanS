@@ -20,7 +20,7 @@ shiny_ui <- function() {
     navbarPage(
 
       # title -------------------------------------------------
-      title = "EmStanS (0.0.0)",
+      title = "EmStanS Lite (0.0.0)",
 
       #---------------------------------------------------------
       # Data Import
