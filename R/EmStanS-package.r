@@ -21,7 +21,10 @@
 #' @import shinyWidgets
 #' @import shinydashboard
 #' @import bslib
+#' @import plotly
 #' @importFrom foreach foreach `%do%`
+#' @importFrom ggrepel geom_label_repel
+#' @importFrom grid arrow unit
 #' @importFrom glue glue
 #' @importFrom dplyr mutate bind_cols select mutate_all mutate_at rename bind_rows arrange slice left_join case_when vars group_split pull group_by filter summarise
 #' @importFrom tibble tibble

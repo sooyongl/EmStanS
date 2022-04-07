@@ -4,7 +4,7 @@
 \alias{select_weight}
 \title{select by weight}
 \usage{
-select_weight(selected_CP, gam_res, cut_scores, gamest)
+select_weight(selected_CP, gam_res, cut_scores, gamest, WESS)
 }
 \description{
 select by weight

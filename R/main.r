@@ -24,7 +24,7 @@
 #' fit <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
 #' }
 #' @export
-emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
+emstans <- function(data, lvname = NULL, WESS = F, GAM = T,
                     SD = 1, EC = 0, digits= 3) {
 
   message("Note. Input data must be ordered by OOD, location, and ALD")
@@ -57,9 +57,9 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
   cut_point <- append(cut_point, gam_res[["scp"]])
 
   selected_CP <- select_cp(cut_point, cut_scores, WESS,GAM)
-  selected_CS <- select_cs(selected_CP, gam_res, new_data$location, WESS, GAM)
+  selected_CS <- select_cs(selected_CP, gam_res, data$location, WESS, GAM)
 
-  selected_weights <- select_weight(selected_CP, gam_res, cut_scores, GAM)
+  selected_weights <- select_weight(selected_CP, gam_res, cut_scores, GAM, WESS)
 
   data_2 <- data %>% bind_cols(., cut_scores)
 
@@ -71,6 +71,14 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
 
   cutpoint_inp <- selected_CP
   dataUse_1 <- data2
+
+  p <- plotting(dataUse_1,
+                selected_CP,
+                selected_CS,
+                selected_weights,
+                WESS,
+                GAM,
+                gam_est)
 
   ess_table <- dataUse_1 %>%
     select(OOD, location, ALD, Operational_Lv,
@@ -151,7 +159,7 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
     )
 
 
-  o <- list(ess_table = ess_table, review_table = review_table)
+  o <- list(ess_table = ess_table, review_table = review_table, ess.plot = p)
   class(o) <- append("ess", class(o))
   # o <- structure(o, class = "ess")
 

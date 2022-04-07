@@ -4,7 +4,7 @@
 \alias{emstans}
 \title{Conduct Embedded Standard Setting}
 \usage{
-emstans(data, lvname = NULL, WESS = T, GAM = T, SD = 1, EC = 0, digits = 3)
+emstans(data, lvname = NULL, WESS = F, GAM = T, SD = 1, EC = 0, digits = 3)
 }
 \arguments{
 \item{data}{a data frame containing OOD, location, and ALD. The data should

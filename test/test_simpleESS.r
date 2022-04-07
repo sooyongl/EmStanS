@@ -6,7 +6,7 @@ root <- rprojroot::find_rstudio_root_file()
 source_files <- fs::dir_ls(file.path(root, "R"))
 data_path <- file.path(root, "test/data")
 
-
+# library(EmStanS)
 # for(i in 1:length(source_files)) { source(source_files[i])}
 
 filePath <- fs::dir_ls(data_path)[1]
@@ -14,7 +14,11 @@ data <- read.csv(filePath)
 data[[1]] <- 1:nrow(data)
 names(data) <- c("OOD","location","ALD")
 
-a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
+a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"),
+              WESS = T, GAM = F)
+a1[[1]]
+a1[[2]]
+a1[[3]]
 launchEmStanS()
 library(data.table)
 library(mgcv)
@@ -75,6 +79,8 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
 
   cutpoint_inp <- selected_CP
   dataUse_1 <- data2
+
+  p <- plotting(dataUse_1, selected_CP, selected_CS, selected_weights, WESS, GAM, gam_est)
 
   ess_table <- dataUse_1 %>%
     select(OOD, location, ALD, Operational_Lv,
@@ -169,7 +175,7 @@ emstans <- function(data, lvname = NULL, WESS = T, GAM = T,
     )
 
 
-  o <- list(ess_table = ess_table, review_table = review_table)
+  o <- list(ess_table = ess_table, review_table = review_table, ess.plot = p)
   class(o) <- append("ess", class(o))
   # o <- structure(o, class = "ess")
 

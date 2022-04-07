@@ -1,0 +1,14 @@
+name: EmStanS
+title: EmStanS
+username:
+account: sooyonglee09
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6034565
+bundleId: 5772581
+url: https://sooyonglee09.shinyapps.io/EmStanS/
+when: 1649296033.94569
+lastSyncTime: 1649296033.94569
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|.Rbuildignore|DESCRIPTION|LICENSE|NAMESPACE|README.md|README.rmd|test/data/test_data.csv|test/rsconnect/shinyapps.io/creativemeasurementsolutionsllc/EmStanS_Lite.dcf|test/source.r|test/test.r|test/test_simpleESS.r|man

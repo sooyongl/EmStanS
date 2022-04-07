@@ -1,12 +1,12 @@
 {
     "dialog-state": {
-        "query": "runESS",
-        "path": "",
+        "query": "select_weight",
+        "path": "/R",
         "regex": false,
         "caseSensitive": false,
         "filePatterns": [],
         "excludeFilePatterns": [],
-        "resultsCount": 3,
+        "resultsCount": 2,
         "errorCount": 0,
         "replaceErrors": "",
         "projectRelative": true

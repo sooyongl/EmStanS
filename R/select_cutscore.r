@@ -104,15 +104,31 @@ select_cs <- function(selected_CP, gam_res, location, WESS, gamest) {
 
 #' select by weight
 #'
-select_weight <- function(selected_CP, gam_res,cut_scores, gamest) {
-  if(!gamest) {
-    weights <- cut_scores[selected_CP, ]
-    w_pos <- which(str_detect(names(weights), "_W"))
-    w_name <- names(weights[ ,w_pos])
-    weights <- diag(as.matrix(weights[ ,w_pos]))
-    names(weights) <- w_name
+select_weight <- function(selected_CP, gam_res,cut_scores, gamest, WESS) {
+
+  if(WESS) {
+    if(!gamest) {
+      weights <- cut_scores[selected_CP, ]
+      w_pos <- which(str_detect(names(weights), "_W"))
+      w_name <- names(weights[ ,w_pos])
+      weights <- diag(as.matrix(weights[ ,w_pos]))
+      names(weights) <- w_name
+    } else {
+      weights <- unlist(gam_res$gam.cs$weight_gam_cs)
+    }
+
+
   } else {
-    weights <- unlist(gam_res$gam.cs$weight_gam_cs)
+    if(!gamest) {
+      weights <- cut_scores[selected_CP, ]
+      w_pos <- which(str_detect(names(weights), "_C"))
+      w_name <- names(weights[ ,w_pos])
+      weights <- diag(as.matrix(weights[ ,w_pos]))
+      names(weights) <- w_name
+    } else {
+      weights <- unlist(gam_res$gam.cs$default_gam_cs)
+    }
+
   }
 
   return(weights)

@@ -73,18 +73,24 @@ shiny_ui <- function() {
                ),
 
                fluidRow(
-                 # verbatimTextOutput("results")
-                 tabsetPanel(
-                   tabPanel("Model Fit",
-                            downloadButton("ess_weight", "Download"),
-                            DTOutput("result0")),
 
-                   tabPanel("Review",
-                            downloadButton("review", "Download"),
-                            DTOutput("result1")
-                   )
+
+                 column(width = 5,align = 'left',
+                        DT::dataTableOutput("result0")
+
+                 ),
+                 column(width = 5,offset = 1, align = 'right',
+                        plotlyOutput("result2",
+                                     width = "100%",
+                                     height = "600px",inline = TRUE)
                  )
+
                )
+      ),
+
+      tabPanel("Review",
+
+               DTOutput("result1")
       )
     )
   )##########################  shiny UI last line  #######################
@@ -214,9 +220,12 @@ shiny_server <- function(input, output, session) {
       lvname <- paste0("Level",1:input$nlevel)
     }
 
-    res <- emstans(data = imprt_data(), lvname = lvname)
+    WESS   <- input$WESS
+    gamest <- input$gamest
+
+    res <- emstans(data = imprt_data(), lvname = lvname, WESS = WESS, GAM = gamest)
     # res <- emstans(data = inpdata, lvname = lvname)
-    res[[1]]
+    # res[[1]]
     return(res)
   })
 
@@ -229,6 +238,12 @@ shiny_server <- function(input, output, session) {
 
     output$result1 <- renderDT({
       res_emstans()[[2]]
+    })
+
+
+    output$result2 <- renderPlotly({
+
+      res_emstans()[[3]]
     })
 
   })

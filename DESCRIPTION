@@ -31,6 +31,7 @@ Collate:
     'calculate_operationlevel.r'
     'fit_nonlinear.r'
     'main.r'
+    'plot.r'
     's3method.r'
     'select_cutscore.r'
     'simulation.r'
