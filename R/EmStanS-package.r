@@ -22,6 +22,7 @@
 #' @import shinydashboard
 #' @import bslib
 #' @import plotly
+#' @import ggplot2
 #' @importFrom foreach foreach `%do%`
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom grid arrow unit
