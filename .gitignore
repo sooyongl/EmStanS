@@ -5,6 +5,6 @@
 test
 ^server.r
 ^ui.r
-^rsconnect
+rsconnect
 *.dcf
 *.dcf
