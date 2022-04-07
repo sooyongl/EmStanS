@@ -28,19 +28,19 @@ launchEmStanS <- function(local = T) {
   # environment(shiny_ui) <- shiny_env
   # environment(shiny_server) <- shiny_env
 
-  if(local){
-    if(requireNamespace("shiny", quietly = TRUE)){
-      app <- shiny::shinyApp(
-        ui = shiny_ui,
-        server = shiny_server
-      )
-      shiny::runApp(app)
+   if(local){
+     if(requireNamespace("shiny", quietly = TRUE)){
+       app <- shiny::shinyApp(
+         ui = shiny_ui,
+         server = shiny_server
+       )
+       shiny::runApp(app)
 
-    } else {
-      stop('shiny package is not available. Please install.', call.=FALSE)
-    }
-  } else {
+     } else {
+       stop('shiny package is not available. Please install.', call.=FALSE)
+     }
+   } else {
 
-    browseURL("https://creativemeasurementsolutionsllc.shinyapps.io/EmStanS_Lite")
-  }
+     browseURL("https://creativemeasurementsolutionsllc.shinyapps.io/EmStanS_Lite")
+   }
 }

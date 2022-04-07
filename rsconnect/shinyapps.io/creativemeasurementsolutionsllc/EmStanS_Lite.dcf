@@ -5,10 +5,10 @@ account: creativemeasurementsolutionsllc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5834433
-bundleId: 5772590
+bundleId: 5775172
 url: https://creativemeasurementsolutionsllc.shinyapps.io/EmStanS_Lite/
-when: 1649296186.06905
-lastSyncTime: 1649296186.06905
+when: 1649352883.03362
+lastSyncTime: 1649352883.03362
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .gitattributes|.Rbuildignore|DESCRIPTION|LICENSE|NAMESPACE|README.md|README.rmd|test/data/test_data.csv|test/rsconnect/shinyapps.io/creativemeasurementsolutionsllc/EmStanS_Lite.dcf|test/source.r|test/test.r|test/test_simpleESS.r|man

@@ -12,7 +12,6 @@
 #' @name EmStanS-package
 #' @docType package
 #' @title Embedded Standard Setting
-#' @author Sooyong Lee \email{sooyongl09@utexas.edu}
 #' @import stringr
 #' @import mgcv
 #' @import tidymv

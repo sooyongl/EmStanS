@@ -2,7 +2,14 @@ Package: EmStanS
 Type: Package
 Title: Embedded Standard Setting
 Version: 0.1.0
-Author: Sooyong Lee
+Authors@R: 
+    c(person(given = "Daniel",
+             family = "Lewis",
+             role = c("aut", "cph")),
+      person(given = "Sooyong",
+             family = "Lee",
+             email = "sooyongl09@utexas.edu",
+             role = c("aut","cre")))
 Maintainer: Sooyong Lee <sooyongl09@utexas.edu>
 Description: Embedded standard setting (EmStanS) to calculate counts and weights
 Depends:
@@ -14,7 +21,9 @@ Imports:
     magrittr,
     purrr,
     data.table,
-    foreach
+    foreach,
+    ggplot2,
+    plotly
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

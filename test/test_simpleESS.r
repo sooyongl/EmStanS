@@ -1,5 +1,5 @@
 rm(list = ls())
-
+library(tidyverse)
 
 root <- rprojroot::find_rstudio_root_file()
 
@@ -14,8 +14,8 @@ data <- read.csv(filePath)
 data[[1]] <- 1:nrow(data)
 names(data) <- c("OOD","location","ALD")
 
-a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"),
-              WESS = T, GAM = F)
+a1 <- emstans(data = data, lvname = c("Level1", "Level2", "Level3"),
+              WESS = T, GAM = T)
 a1[[1]]
 a1[[2]]
 a1[[3]]
@@ -23,6 +23,8 @@ launchEmStanS()
 library(data.table)
 library(mgcv)
 library(tidymv)
+library(glue)
+library(foreach)
 # Test run ------------------------------------------------
 SD = 1
 EC = 0

@@ -17,7 +17,4 @@ and cut scores are estimated by optimizing the relationship between the
 item-ALD alignments and the empirically. Under ESS, this package provides
 cut score estimation algorithm (referred to as ESS-Count and ESS-Weight).
 }
-\author{
-Sooyong Lee \email{sooyongl09@utexas.edu}
-}
 \keyword{package}

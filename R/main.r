@@ -121,6 +121,10 @@ emstans <- function(data, lvname = NULL, WESS = F, GAM = T,
       "Cut_Score" = "location"
     ) %>% select(-OOD)
 
+  if(GAM) {
+    cs_inf$Cut_Score <- selected_CS
+  }
+
   cs_inf_upper <-
     cs_inf %>%
     mutate(
@@ -156,7 +160,8 @@ emstans <- function(data, lvname = NULL, WESS = F, GAM = T,
       "Aligned_Lvl" = "ALD",
       "Operational_Lvl" = "Operational_Lv",
       "Lvl_Diff" = "Diff_LV"
-    )
+    ) %>%
+    select(-Cut_Score, -Cut_Score_upper)
 
 
   o <- list(ess_table = ess_table, review_table = review_table, ess.plot = p)

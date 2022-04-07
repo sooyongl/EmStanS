@@ -11,7 +11,7 @@ shiny_ui <- function() {
     #   tags$link(rel = "stylesheet", type = "text/css",
     #             href = file.path("inst","extdata", "theme.css"))
     # ),
-    theme=bs_theme(version = 4,
+    theme=bslib::bs_theme(version = 4,
                    bootswatch = "journal",
                    primary = "#ED79F9",
                    base_font = font_google("Work Sans") #
