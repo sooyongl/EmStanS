@@ -111,7 +111,7 @@ shiny_server <- function(input, output, session) {
         column(4,
                fileInput("setups", "Choose csv file for Setup",
                          multiple = FALSE, accept = c("csv")),
-               textInput("Level name", "lvname"),
+               textInput("lvname", "Level name (comma separated)"),
 
 
                actionButton("import", "IMPORT")
@@ -168,7 +168,10 @@ shiny_server <- function(input, output, session) {
     if(input$empirical == "empirical") {
 
       inpdata <- read.csv(input$setups$datapath)
+      inpdata[[1]] <- 1:nrow(inpdata)
+      names(inpdata) <- c("OOD","location","ALD")
 
+      return(inpdata)
 
     } else {
       nitem       <- input$nitem
@@ -197,8 +200,6 @@ shiny_server <- function(input, output, session) {
   })
 
 
-
-
   output$sim_data_down <- downloadHandler(
     filename = function() {
       paste("simulated_data", ".csv", sep = "")
@@ -213,8 +214,10 @@ shiny_server <- function(input, output, session) {
 
     if(input$empirical == "empirical") {
       lvname <- input$lvname
+      # lvname <- c("Level1,Level2,Level3")
       lvname <- str_remove_all(lvname, " ")
       lvname <- str_split(lvname, ",", simplify = T)[1,]
+      # lvname <- c("Level1","Level2","Level3")
 
     } else {
       lvname <- paste0("Level",1:input$nlevel)

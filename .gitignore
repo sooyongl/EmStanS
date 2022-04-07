@@ -6,3 +6,5 @@ test
 ^server.r
 ^ui.r
 ^rsconnect
+*.dcf
+*.dcf
