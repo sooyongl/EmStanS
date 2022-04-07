@@ -65,7 +65,7 @@ shiny_ui <- function() {
                         switchInput(
                           inputId = "gamest",
                           label = "Smoothing",
-                          value = T,
+                          value = F,
                           onStatus = "danger",
                           offStatus = "sucess",
                           labelWidth = "80px")
