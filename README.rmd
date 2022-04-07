@@ -25,7 +25,7 @@ This package aims to support Embedded Standard Setting, calculating counts and w
 
 
 ```{r}
-devtools::install_github("sooyongl/EmStanS")
+devtools::install_github("sooyongl/EmStanS", dependencies = T)
 ```
 
 The documentation is available at [here](https://sooyongl.github.io/EmStanS/).
