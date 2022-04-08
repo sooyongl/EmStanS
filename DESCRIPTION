@@ -23,7 +23,16 @@ Imports:
     data.table,
     foreach,
     ggplot2,
-    plotly
+    plotly,
+	bslib,
+	shinyWidgets,
+	shinydashboard,
+	shinythemes,
+	tidymv,
+	DT,
+	mgcv,
+	foreach,
+	ggrepel
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
