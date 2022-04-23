@@ -11,7 +11,7 @@ shiny_ui <- function() {
     #   tags$link(rel = "stylesheet", type = "text/css",
     #             href = file.path("inst","extdata", "theme.css"))
     # ),
-    theme=bslib::bs_theme(version = 4,
+    theme=bs_theme(version = 4,
                    bootswatch = "journal",
                    primary = "#ED79F9",
                    base_font = font_google("Work Sans") #
@@ -76,7 +76,7 @@ shiny_ui <- function() {
 
 
                  column(width = 5,align = 'left',
-                        DT::dataTableOutput("result0")
+                        dataTableOutput("result0", width = "80%")
 
                  ),
                  column(width = 5,offset = 1, align = 'right',
