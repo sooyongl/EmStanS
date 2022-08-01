@@ -1,6 +1,13 @@
 rm(list = ls())
 library(tidyverse)
-
+library(data.table)
+library(foreach)
+library(glue)
+library(mgcv)
+library(tidymv)
+library(ggrepel)
+library(grid)
+library(plotly)
 root <- rprojroot::find_rstudio_root_file()
 
 source_files <- fs::dir_ls(file.path(root, "R"))
@@ -14,17 +21,82 @@ data <- read.csv(filePath)
 data[[1]] <- 1:nrow(data)
 names(data) <- c("OOD","location","ALD")
 
+
+# Test run ------------------------------------------------
+
 a1 <- emstans(data = data, lvname = c("Level1", "Level2", "Level3"),
               WESS = T, GAM = T)
 a1[[1]]
 a1[[2]]
 a1[[3]]
+
 launchEmStanS()
-library(data.table)
-library(mgcv)
-library(tidymv)
-library(glue)
-library(foreach)
+
+# Bootstrap test --------------------------------------------
+boot_emstans <- function(data, lvname = NULL,
+                         WESS = T, GAM = T,
+                         n_rep = 10, keep.sample = F, empirical = F) {
+
+  boot_sample <-
+    data %>%
+    sample_frac(., size = 1, replace = T) %>%
+    arrange(location)
+
+
+  boot_res<- lapply(1:n_rep, function(bi) {
+    # Cut scores
+    cut_info <- calCountWeight(new_data = data, n_cut = length(lvname), empirical = empirical)
+
+    # GAM fitting
+    if(WESS){
+      cut_res <- cut_info %>% select(matches("_W$"), location)
+      lv_nm <- paste0("L",(2):n_level, "_W")
+    } else {
+      cut_res <- cut_info %>% select(matches("_C$"), location)
+      lv_nm <- paste0("L",(2):n_level, "_C")
+    }
+
+    lv <- names(cut_res)[which(names(cut_res) != "location")]
+    # lv <- names(cut_res)[1:(n_level-1)]
+    knots <- ifelse(nrow(cut_res) > 20, 10, round(nrow(cut_res)/2, 0))
+    model_fit <- lapply(lv, function(x) {
+      gam(formula(glue("{x} ~ s(location, k = {knots})")),
+          data = cut_res, family = "gaussian")
+    })
+
+    pred_fit <- map(model_fit, ~ .x %>% predict_gam(length_out = a1))
+
+    minimizer <- function(model_pred) {
+      min_point <- which.min(model_pred$fit)
+      y_point <- model_pred$fit[min_point]
+      x_point <- model_pred$location[min_point]
+
+      c(x_point, y_point)
+    }
+
+    res <-
+      map(pred_fit, minimizer) %>%
+      do.call('rbind', .) %>%
+      data.frame() %>%
+      set_names(c("x", "y")) %>%
+      mutate(lv_nm = lv_nm) %>%
+      mutate_if(is.numeric, round, 3)
+
+    res
+  })
+
+  boot_res <- bind_rows(boot_res, .id = "boot_id")
+
+  boot_res
+
+}
+
+
+
+
+
+
+
 # Test run ------------------------------------------------
 SD = 1
 EC = 0
@@ -187,10 +259,10 @@ a1 <- emstans(data, lvname = c("Level1", "Level2", "Level3"))
 
 
 print.ess <- function(x) {
-    list(
-      ess_table = head(x$ess_table),
-      review    = head(x$review)
-    )
+  list(
+    ess_table = head(x$ess_table),
+    review    = head(x$review)
+  )
 }
 
 print(o)

@@ -1,9 +1,10 @@
 {
     "dialog-state": {
-        "query": "select_weight",
+        "query": ".calCW",
         "path": "/R",
         "regex": false,
         "caseSensitive": false,
+        "wholeWord": false,
         "filePatterns": [],
         "excludeFilePatterns": [],
         "resultsCount": 2,

@@ -18,7 +18,7 @@ library(waiter)
 root <- rprojroot::find_rstudio_root_file()
 
 source_files <- fs::dir_ls(file.path(root, "R"))
-data_path <- file.path(root, "test/data")
+data_path <- file.path(root, "test/data/OneDrive_1_7-13-2022")
 
 
 for(i in 1:length(source_files)) { source(source_files[i])}
@@ -30,7 +30,9 @@ filePath <- fs::dir_ls(data_path)[1]
 new_data <- read.csv(filePath)
 
 new_data$ALD <- factor(new_data$ALD, levels = paste0("Level",1:3))
-new_data$ALD <- as.character(factor(new_data$ALD, labels = paste0("aaaaa",1:length(lvname))))
+new_data$ALD <- as.character(
+  factor(new_data$ALD,
+         labels = paste0("aaaaa",1:length(lvname))))
 
 count_weight <- calESS(new_data)
 

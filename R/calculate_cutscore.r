@@ -33,11 +33,30 @@ calCountWeight <- function(new_data, n_cut = 3, d_alpha = 1, SD = 1, empirical =
 
   new_data$OOD <- 1:dim(new_data)[1]
 
+  # if(empirical) {
+  #   cut_candi <- new_data$location
+  # } else {
+  #   cut_candi <- seq(min(new_data$location), max(new_data$location), by = 1)
+  # }
+
   if(empirical) {
+
     cut_candi <- new_data$location
+
   } else {
-    cut_candi <- seq(min(new_data$location), max(new_data$location), by = 1)
+
+    if(max(new_data$location) - min(new_data$location) < 10) {
+      seq_by = 0.1
+      cut_candi <- seq(min(new_data$location), max(new_data$location), by = seq_by)
+      cut_candi <- cut_candi - runif(length(cut_candi), -0.1, 0.1)
+
+    } else {
+      seq_by = 1
+      cut_candi <- seq(min(new_data$location), max(new_data$location),by = seq_by)
+      cut_candi <- cut_candi - runif(length(cut_candi), -1, 1)
+    }
   }
+
 
   cut_candi_id <- rep(1:length(cut_candi), each = dim(new_data)[1])
   cut_candi_list <- rep(cut_candi, each = dim(new_data)[1])
