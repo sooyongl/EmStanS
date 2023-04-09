@@ -6,10 +6,13 @@
 This package aims to support Embedded Standard Setting, calculating
 counts and weights.
 
+This is a lite version. For the full version, contact Dan.Lewis@CreativeMeasurement.com.
+
 ## Install
 
 ``` r
-devtools::install_github("CMS5000/EmStanS", dependencies = T)
+# devtools::install_github("CMS5000/EmStanS", dependencies = T)
+devtools::install_github("sooyongl/EmStanS", dependencies = T)
 ```
 
 ## Usage
