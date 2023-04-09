@@ -95,5 +95,6 @@ res
 EmStanS::launchEmStanS(local = T)
 
 # Launch Shiny app on the server
+# Currently not available
 EmStanS::launchEmStanS(local = F)
 ```
