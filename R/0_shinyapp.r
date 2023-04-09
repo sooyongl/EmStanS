@@ -76,7 +76,7 @@ shiny_ui <- function() {
 
 
                  column(width = 5,align = 'left',
-                        dataTableOutput("result0", width = "80%")
+                        dataTableOutput("result0")
 
                  ),
                  column(width = 5,offset = 1, align = 'right',
@@ -235,11 +235,11 @@ shiny_server <- function(input, output, session) {
 
   observeEvent(input$run1, {
 
-    output$result0 <- renderDT({
-      DT::datatable(res_emstans()[[1]])
+    output$result0 <- renderDataTable({
+      res_emstans()[[1]]
     })
 
-    output$result1 <- renderDT({
+    output$result1 <- renderDataTable({
       res_emstans()[[2]]
     })
 
