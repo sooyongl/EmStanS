@@ -8,6 +8,8 @@ counts and weights.
 
 This is a lite version. For the full version, contact Dan.Lewis@CreativeMeasurement.com.
 
+See also Lewis, D., & Cook, R. (2020). Embedded standard setting: Aligning standard‐setting methodology with contemporary assessment design principles. Educational Measurement: Issues and Practice, 39(1), 8-21.
+
 ## Install
 
 ``` r
