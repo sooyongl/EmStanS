@@ -38,7 +38,8 @@ print_itemtable1 <- function(imprt_data) {
       set_names(nm = c("GCA","Subject","Grade","Round","Table","Panelist","Item_ID","ALD")) %>%
       group_by(GCA, Subject, Grade, Round, Panelist) %>%
       summarise(
-        `Number of Item` = n()
+        `Number of Item` = n(),
+        .groups = "drop"
       ) %>%
       mutate(GCA = factor(GCA, levels = imprt_data[[1]]$GCA)) %>%
       arrange(GCA)
@@ -72,7 +73,8 @@ print_itemtable2 <- function(imprt_data) {
     GCA_item <- imprt_data[["item_data"]] %>%
       group_by(GCA) %>%
       summarise(
-        `N.Item in GCA` = n()
+        `N.Item in GCA` = n(),
+        .groups = "drop"
       ) %>%
       mutate(GCA = factor(GCA, levels = imprt_data[[1]]$GCA)) %>%
       arrange(GCA)
@@ -82,7 +84,8 @@ print_itemtable2 <- function(imprt_data) {
       Domain_item <- imprt_data[["item_data"]] %>%
         group_by(GCA,Domain) %>%
         summarise(
-          `N.Item in Domain` = n()
+          `N.Item in Domain` = n(),
+          .groups = "drop"
         ) %>%
         mutate(GCA = factor(GCA, levels = imprt_data[[1]]$GCA)) %>%
         arrange(GCA)

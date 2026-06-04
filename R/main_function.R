@@ -290,9 +290,12 @@ emstans <- function(filePath = NULL,
 
   output$input <- input
 
-  structure(
+  output <- structure(
     output,
     class = "ESS"
   )
+
+
+  invisible(output)
 
 }

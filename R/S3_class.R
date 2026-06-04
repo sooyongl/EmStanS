@@ -8,5 +8,16 @@
 #'     review    = head(x$review)
 #'   ))
 #' }
+#'
+#'
+print.ESS <- function(x, ...) {
+  cat("ESS output\n")
+  cat("----------\n")
+  cat("Individual Cut:\n")
+
+  print(x$individual_cut, n = 10, width = Inf)
+
+  invisible(x)
+}
 
 
