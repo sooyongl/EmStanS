@@ -1,4 +1,4 @@
-#' #' @include 0_import.r
+#' @include EmStanS-package.r
 NULL
 
 #' generate fake data
@@ -10,9 +10,11 @@ NULL
 #' @param nlevel a numeric indicating the number of levels
 #' @param sdinp a numeric indicating standard deviation adjusting ESS weights
 #' @param ecinp a numeric for essencially consistent items
+#' @param n a numeric for items
 #' @param ... a vector of arguments for \code{runif}
+#' @export
 genFakeDataSet <- function(ngca, ntable, npanelist, cor_val, nlevel, sdinp = 1, ecinp = 0, n, ...) {
-  # ngca = 3; cor_val = 0.2; n = 100; nlevel = 3; input <- list(100,300);ntable = 3; npanelist = 5; sdinp = 1; ecinp = 0
+  # ngca = 3; cor_val = 0.2; n = 100; nlevel = 3; input <- list(100,300);ntable = 5; npanelist = 5; sdinp = 1; ecinp = 0
   input <- list(...)
 
   gca <- paste0("M",1:ngca)

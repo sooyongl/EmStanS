@@ -1,4 +1,4 @@
-#' @include 0_import.r
+#' @include EmStanS-package.r
 NULL
 
 #' read_data

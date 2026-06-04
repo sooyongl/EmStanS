@@ -1,6 +1,7 @@
 #' @export
 emstans <- function(filePath = NULL,
                     data = NULL,
+                    tests = NULL,
 
                     targets = "ALD",
                     WESS = T,
@@ -32,9 +33,10 @@ emstans <- function(filePath = NULL,
   input$font_size <- font_size # = 14
 
   # Data imported --------------------------------
-  # filePath = fs::dir_ls("test/data/example_file")[1]
+  # filePath = fs::dir_ls("prerun/data/example_file")[1]
   input$setups$datapath <- filePath
 
+  # imprt_data <- data
   imprt_data <- if(is.null(filePath)) {
     data
   } else {
@@ -62,7 +64,19 @@ emstans <- function(filePath = NULL,
 
   # Information ready --------------------------------------
 
-  input$tests <-  as.character(setup_data$GCA)
+  if(is.null(tests)) {
+
+    input$tests <-  as.character(setup_data$GCA)
+
+  } else if(is.numeric(tests)) {
+
+    input$tests <-  as.character(setup_data$GCA[tests])
+
+  } else if(is.character(tests)) {
+
+    input$tests <-  as.character(setup_data$GCA[setup_data$GCA %in% tests])
+  }
+
 
   information <-
     get_data_info(

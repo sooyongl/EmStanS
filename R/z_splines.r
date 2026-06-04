@@ -1,4 +1,4 @@
-#' @include 0_import.r
+#' @include EmStanS-package.r
 NULL
 
 
@@ -69,7 +69,8 @@ splineFit <- function(data_inp, information = NULL) {
       left_join(res_cut_score, by = "Cut Level") %>%
       group_by(`Cut Level`) %>%
       summarise(
-        selected_cp = which(abs(!!as.name(loc_name) - selected_cs)  == 0)[1]
+        selected_cp = which(abs(!!as.name(loc_name) - selected_cs)  == 0)[1],
+        .groups = "drop"
       )
 
     res <- list(gam_pred = res_pred,
@@ -166,7 +167,6 @@ splineFit <- function(data_inp, information = NULL) {
 #'
 #' p_3 <- predict_gam(model, values = list(x0 = c(0.250599, 0.503313, 0.756028)))
 #'}
-#' @export
 predict_gam <- function(model, exclude_terms = NULL, length_out = 50, values = NULL, type = "link") {
   n_terms <- length(model[["var.summary"]])
 
@@ -253,8 +253,12 @@ calGamOutcome <- function(data, par = 1) {
 }
 
 #' Calculate the minimun value of GAM function
-#' @param ess_fit a data frame of fitted ESS-Count/Weight
-#' @gam_fit a gam class
+#' @param ess_fit A data frame of fitted ESS-Count or ESS-Weight results.
+#' @param gam_fit A fitted GAM object, usually from `mgcv::gam()`.
+#' @param loc_name A character string giving the column name of the cut-score location variable.
+#'
+#' @return A named numeric vector with the estimated minimum location `x` and value `y`.
+#'
 calGamMinimun <- function(ess_fit, gam_fit, loc_name) {
   # ess_fit = data_inp; gam_fit = fit_w
   cut_score <- ess_fit[[loc_name]]

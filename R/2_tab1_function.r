@@ -306,29 +306,52 @@ ready_median_table <- function(tab1_res, type = "all"){
 
   med_cutscore <-
     foreach(mei = 1:length(tt1)) %do% {
-      # mei = 1; pi = 1
+      # mei = 1; p_i = 1
       dataUse <- tt1[[mei]]
       num_level <- length(page_name)
       loc_nm <- names(dataUse)[get_which(names(dataUse), "_loc")]
-      foreach(pi = 1:num_level, .combine = 'cbind') %do% {
-        pg_start <- page_name[pi]
-        loc_start <- loc_nm[pi]
 
-        for_given <- tt1[[mei]][[page_name[pi]]]
+
+      foreach(p_i = 1:num_level, .combine = 'cbind') %do% {
+        pg_start <- page_name[p_i]
+        loc_start <- loc_nm[p_i]
+
+
+
+        # cols_use <- c(pg_start, loc_start)
+        # message("p_i = ", p_i)
+        # message("cols_use = ", paste(cols_use, collapse = ", "))
+        # message("is.na(cols_use) = ", paste(is.na(cols_use), collapse = ", "))
+        # message("cols in dataUse = ", paste(cols_use %in% names(dataUse), collapse = ", "))
+        #
+        # if (anyNA(cols_use)) {
+        #   stop("Missing column name in cols_use: ", paste(cols_use, collapse = ", "))
+        # }
+        #
+        # if (!all(cols_use %in% names(dataUse))) {
+        #   stop(
+        #     "Some selected columns are not in dataUse.\n",
+        #     "cols_use: ", paste(cols_use, collapse = ", "), "\n",
+        #     "names(dataUse): ", paste(names(dataUse), collapse = ", ")
+        #   )
+        # }
+
+
+        for_given <- tt1[[mei]][[page_name[p_i]]]
 
         medp <- get_med(for_given)
 
         mp <- c()
         for(temi in 1:length(medp)) {
           # temi = 2
-          med_point <- which(tt1[[mei]][[page_name[pi]]] %in% medp[temi] )
+          med_point <- which(tt1[[mei]][[page_name[p_i]]] %in% medp[temi] )
           mp[temi] <- med_point[1]
         }
 
         dataUse %>%
           select(all_of(pg_start), all_of(loc_start)) %>%
           slice(mp) %>%
-          summarise_all( mean )
+          summarise_all( mean)
       }
     }
 
@@ -379,28 +402,29 @@ ready_average_table <- function(tab1_res, type = "all"){
 
   avg_cutscore <-
     foreach(mei = 1:length(tt1)) %do% {
-      # mei = 1; pi = 1
+      # mei = 1; p_i = 1
       dataUse <- tt1[[mei]]
       num_level <- length(page_name)
       loc_nm <- names(dataUse)[get_which(names(dataUse), "_loc")]
-      foreach(pi = 1:num_level, .combine = 'cbind') %do% {
-        pg_start <- page_name[pi]
-        loc_start <- loc_nm[pi]
+      foreach(p_i = 1:num_level, .combine = 'cbind') %do% {
+        pg_start <- page_name[p_i]
+        loc_start <- loc_nm[p_i]
 
-        for_given <- tt1[[mei]][[page_name[pi]]]
+        for_given <- tt1[[mei]][[page_name[p_i]]]
 
         medp <- for_given
         mp <- c()
         for(temi in 1:length(medp)) {
           # temi = 2
-          med_point <- which(tt1[[mei]][[page_name[pi]]] %in% medp[temi] )
+          med_point <- which(tt1[[mei]][[page_name[p_i]]] %in% medp[temi] )
           mp[temi] <- med_point[1]
         }
 
         dataUse %>%
           select(all_of(pg_start), all_of(loc_start)) %>%
           slice(mp) %>%
-          summarise_all( mean )
+          summarise_all( mean ,
+                         .groups = "drop")
       }
     }
 

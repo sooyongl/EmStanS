@@ -10,48 +10,71 @@ Authors@R:
              family = "Lee",
              email = "sooyongl09@utexas.edu",
              role = c("aut","cre")))
-Maintainer: Sooyong Lee <sooyongl09@utexas.edu>
-Description: Embedded standard setting (EmStanS) to calculate counts and weights
+Maintainer: Sooyong Lee <sooyongl09@gmail.com>
+Description: Provides functions for embedded standard setting, including data preparation,
+    item-level summaries, cut score estimation, visualization, reporting, and simulation.
+    The package implements embedded standard setting approaches such as ESS-Count and
+    ESS-Weight to support the estimation of performance standards from item-achievement
+    level descriptor alignments and empirical item information.
 Depends:
-    R (>= 3.6.0)
-Imports: 
-    dplyr,
-    tidyr,
-    stringr,
-    magrittr,
-    purrr,
+    R (>= 4.1.0)
+Imports:
+    bslib,
     data.table,
+    dplyr,
+    DT,
     foreach,
     ggplot2,
-    plotly,
-	bslib,
-	shinyWidgets,
-	shinydashboard,
-	shinythemes,
-	tidymv,
-	DT,
-	mgcv,
-	foreach,
-	ggrepel
-Suggests: 
-    testthat (>= 3.0.0),
+    ggrepel,
+    glue,
+    grid,
+    htmltools,
+    kableExtra,
     knitr,
+    magrittr,
+    mgcv,
+    plotly,
+    purrr,
+    readxl,
+    stringi,
+    stringr,
+    tibble,
+    tidyr,
+    tidyselect,
+    utils
+Suggests:
+    testthat (>= 3.0.0),
     rmarkdown
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.2
 VignetteBuilder: knitr
-Collate: 
+Collate:
     'EmStanS-package.r'
-    '0_shinyapp.r'
-    'calculate_cutscore.r'
-    'calculate_operationlevel.r'
-    'fit_nonlinear.r'
-    'main.r'
-    'plot.r'
-    's3method.r'
-    'select_cutscore.r'
-    'simulation.r'
-    'z_utils.r'
-    'zz_runAPP.r'
+    '0_colours.r'
+    '0_validate_function.r'
+    '1_data_ready.r'
+    '2_tab0_function.r'
+    '2_tab1_function.r'
+    '2_tab1_item_plots.r'
+    '2_tab1_table.r'
+    '2_tab2_function.r'
+    '2_tab2_table.r'
+    '2_tab3_function.r'
+    '2_tab3_table.r'
+    '2_tab4_function.r'
+    '2_tab4_table.r'
+    '2_update_tab.r'
+    '4_excel_out.r'
+    'extract_function.r'
+    'main_function.r'
+    'print_function.r'
+    'report_function.r'
+    'report_utils.r'
+    'summary_function.r'
+    'z_boot_excel.r'
+    'z_bootstrapping.r'
+    'z_simulation_function.r'
+    'z_splines.r'
+    'z_test.r'
+Config/roxygen2/version: 8.0.0

@@ -51,13 +51,15 @@ validateData <- function(imprt_data) {
     set_names(nm = c("GCA","Subject","Grade","Round","Table","Panelist","Item_ID","ALD")) %>%
     group_by(GCA, Subject, Grade, Round, Panelist) %>%
     summarise(
-      `Number of Item_rating` = n()
+      `Number of Item_rating` = n(),
+      .groups = "drop"
     )
 
   item_data <- imprt_data[["item_data"]] %>%
     group_by(GCA) %>%
     summarise(
-      `Number of Item_itemdata` = n()
+      `Number of Item_itemdata` = n(),
+      .groups = "drop"
     )
 
   a0 <- left_join(rating, item_data, by = "GCA")

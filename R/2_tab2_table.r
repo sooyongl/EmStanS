@@ -278,8 +278,7 @@ gam_fitted_table <- function(gam_fitted, selected_cs) {
 
 # Helper functions ------------------------------------
 #'
-gen_ifelse <-
-  function(x, lvNames) {
+gen_ifelse <- function(x, lvNames) {
     colors <- getColors(pallete = "pastel1", rep_n = 2)
     colors <- colors[1:length(lvNames)]
 

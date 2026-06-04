@@ -2,12 +2,10 @@
 % Please edit documentation in R/EmStanS-package.r
 \docType{package}
 \name{EmStanS-package}
+\alias{EmStanS}
 \alias{EmStanS-package}
 \title{Embedded Standard Setting}
 \description{
-Embedded Standard Setting
-}
-\details{
 Embedded Standard Setting (ESS) is an approach to establish
 performance standards that augments and is embedded within existing
 principled assessment design (PAD) practices. Under ESS, achievement level
@@ -17,4 +15,14 @@ and cut scores are estimated by optimizing the relationship between the
 item-ALD alignments and the empirically. Under ESS, this package provides
 cut score estimation algorithm (referred to as ESS-Count and ESS-Weight).
 }
-\keyword{package}
+\author{
+\strong{Maintainer}: Sooyong Lee \email{sooyongl09@utexas.edu}
+
+Authors:
+\itemize{
+  \item Sooyong Lee \email{sooyongl09@utexas.edu}
+  \item Daniel Lewis [copyright holder]
+}
+
+}
+\keyword{internal}

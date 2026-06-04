@@ -1,4 +1,13 @@
+#' S3 method
+#'
+#' @export
 summary.ESS <- function(x) {
 
-  x$individual_cut
+
+  print.ESS(x)
+
+  # res : individual result
+  # median: median_res_com
+  # mode: modal_res_com
+  # average: average_res_com
 }

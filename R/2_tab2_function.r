@@ -510,7 +510,7 @@ tab2_plot <- function(data_inp, plot_data, information, vvv, selected_cp, select
         aes(group = factor(`Cut Level`),
             linetype = factor(`Cut Level`),
             colour = factor(`Cut Level`)),
-        linewdith = 1.2,
+        linewidth = 1.2,
         alpha = .5
       )
   }
@@ -538,16 +538,17 @@ tab2_plot <- function(data_inp, plot_data, information, vvv, selected_cp, select
       lty = "dashed",
       colour = "grey30"
     ) +
-    geom_label_repel(
+    geom_text(
+    # geom_label_repel(
       data = cut_dt,
       aes(x = !!as.name(loc_name),
           y = Inconsistency,
           label = cutcs),
       fontface = 'bold',
       size = geom.text.size,
-      nudge_y = arrow_length,
-      arrow = arrow(length = unit(0.02, "npc")),
-      box.padding = 1,
+      # nudge_y = arrow_length,
+      # arrow = arrow(length = unit(0.02, "npc")),
+      # box.padding = 1,
       alpha = 0.8
     ) +
     labs(x = "Location",
@@ -613,7 +614,7 @@ ggplotly_render <- function(gg_obj, plot_data, selected_cp, selected_cs, informa
   gg_obj <- gg_obj + theme_bw(base_size = font_size)
 
   ggplotly(gg_obj) %>%
-    layout(
+    plotly::layout(
       legend = list(orientation = "h", x = 0, y = 1.15),
       annotations= list(annotation)
       )
