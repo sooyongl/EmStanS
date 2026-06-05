@@ -78,3 +78,4 @@ Collate:
     'z_splines.r'
     'z_test.r'
 Config/roxygen2/version: 8.0.0
+URL: https://sooyongl.github.io/EmStanS/

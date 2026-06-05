@@ -7,3 +7,6 @@
 ^ui.r
 ^rsconnect
 ^shinyapp.r
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
