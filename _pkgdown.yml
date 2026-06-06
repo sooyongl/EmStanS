@@ -1,8 +1,8 @@
 title: EmStanS
 url: https://sooyongl.github.io/EmStanS
 template:
-  params:
-    bootswatch: sandstone
+  bootstrap: 5
+  bootswatch: sandstone
 navbar:
   structure:
     left: [intro, reference, articles, examples, news]
