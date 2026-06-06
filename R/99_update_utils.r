@@ -3,12 +3,12 @@ NULL
 
 #' Manually update individual ESS results
 #'
-update_tab1 <- function(tab0, tab1, information, manual_cp) {
+update_tab1 <- function(tab0, tab1, information, manual_cs) {
 
   est_cutscore <- tab0$est_cs
 
   tab1$modal_est_cutscore_all <-
-    estCutScore_mode_manual(est_cutscore, information, manual_cp)
+    estCutScore_mode_manual(est_cutscore, information, manual_cs)
 
   tab1$modal_est_cs_all <- map(tab1$modal_est_cutscore_all, ~ .x$est_cs)
   tab1$modal_est_cp_all <- map(tab1$modal_est_cutscore_all, ~ .x$est_cp)
@@ -33,8 +33,8 @@ update_tab1 <- function(tab0, tab1, information, manual_cp) {
 
 #' Estimate modal ESS cut scores based on user-given cut scores.
 #'
-estCutScore_mode_manual <- function(data, information, manual_cutpoint) {
-  # data = est_cutscore; manual_cutpoint = manual_cp
+estCutScore_mode_manual <- function(data, information, manual_cutscore) {
+  # data = est_cutscore; manual_cutscore = manual_cs
 
   gcaid <- information$data_ready$id_list$GCA
   cond <- crossing(gcaid)
@@ -80,7 +80,7 @@ estCutScore_mode_manual <- function(data, information, manual_cutpoint) {
     map(., ~ .x %>% select(-OOD, -all_of(inploc)))
 
   mode_cs <-
-    map2(split_filter, manual_cutpoint, estCutScore_manual,
+    map2(split_filter, manual_cutscore, estCutScore_manual,
          information
     )
   return(mode_cs)
@@ -88,9 +88,9 @@ estCutScore_mode_manual <- function(data, information, manual_cutpoint) {
 
 #' Estimate ESS cut scores based on user-given cut scores
 #'
-estCutScore_manual <- function(inp_data, manual_cutpoint, information) {
+estCutScore_manual <- function(inp_data, manual_cutscore, information) {
   # inp_data = split_filter[[1]];
-  # manual_cutpoint = c(300, 310)
+  # manual_cutscore = c(300, 310)
   GCA_data <- inp_data
 
   need_data <- data_prep(GCA_data, information)
@@ -123,7 +123,7 @@ estCutScore_manual <- function(inp_data, manual_cutpoint, information) {
   gam_res <- extractgam(gam_est)
   cut_point   <- append(cut_point, gam_res$scp)
 
-  selected_CS <- manual_cutpoint
+  selected_CS <- manual_cutscore
   selected_CP <- sapply(selected_CS, function(x) { # x = selected_CS[1]
     a1 <- x - bind_loc[[2]]
     a2 <- which(a1 == max(a1[a1 <= 0]))[1]

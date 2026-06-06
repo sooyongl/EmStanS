@@ -26,3 +26,8 @@ print.ESS <- function(x, ...) {
 }
 
 
+
+
+print.bootESS <- function(x) {
+    x$bootResults$table2
+}

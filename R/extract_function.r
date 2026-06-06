@@ -50,6 +50,20 @@ extract.ESS <- function(x, what = "all",...) {
 
     list(item_review = x$distance_output)
 
+  } else if(what == "cutscore") {
+
+
+    information <- x$information
+    tab0 <- x$tab0
+    tab1 <- x$tab1
+
+    n.of.gca <- information$data_ready$id_list$GCA
+    modal_selected_cs_all <- x$tab1$modal_selected_cs_all
+    names(modal_selected_cs_all) <-
+      # map(tab1$modal_est_cs_all, ~ unique(.x[[1]])) %>% unlist()
+      n.of.gca
+
+    modal_selected_cs_all
   }
 }
 

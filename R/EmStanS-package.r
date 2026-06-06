@@ -33,6 +33,6 @@
 #' @importFrom kableExtra column_spec collapse_rows kable_styling
 #' @importFrom knitr kable
 #' @importFrom stringi stri_replace_all_charclass
-#'
+#' @importFrom psych describe
 #' @keywords internal
 "_PACKAGE"

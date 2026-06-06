@@ -11,3 +11,10 @@ summary.ESS <- function(x) {
   # mode: modal_res_com
   # average: average_res_com
 }
+
+
+summary.bootESS <- function(x) {
+
+  print.bootESS(x)
+  x$bootResults$table2
+}

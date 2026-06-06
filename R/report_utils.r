@@ -428,3 +428,116 @@ report_tab4 <- function(output) {
   )
 }
 
+
+
+report.bootESS <- function(output) {
+  # output <- res_boot
+  bootResults <- output$bootResults
+  n.of.gca <- bootResults$selected_id
+
+  boot_p <- bootResults$boot_p
+  table1 <- bootResults$table1
+  table2 <- bootResults$table2
+
+  table1 <- table1 %>%
+    DT::datatable(
+      caption = htmltools::tags$caption(
+        "Results of Bootstrapping draws",
+        style = "color:black; font-size: 200%;"
+      ),
+      options = list(
+        scrollX = TRUE,
+        pageLength = 10,
+        initComplete = DT::JS(
+          "function(settings, json) {",
+          "$(this.api().table().header()).css({'font-size':'120%', 'background-color': '#000', 'color': '#fff'});",
+          "}"
+        )
+      )
+    )
+
+  table2 <- table2 %>%
+    DT::datatable(
+      caption = htmltools::tags$caption(
+        "Descriptive statistics of bootstrapping draws",
+        style = "color:black; font-size: 200%;"
+      ),
+      options = list(
+        dom = "t",
+        scrollX = TRUE,
+        initComplete = DT::JS(
+          "function(settings, json) {",
+          "$(this.api().table().header()).css({'font-size':'120%', 'background-color': '#000', 'color': '#fff'});",
+          "}"
+        )
+      )
+    )
+
+
+  if(T) {
+    plot_file <- tempfile(fileext = ".png")
+
+    ggplot2::ggsave(
+      filename = plot_file,
+      plot = bootResults$boot_p,
+      width = 9,
+      height = 6,
+      dpi = 300
+    )
+
+    boot_p_tag <- htmltools::tags$img(
+      src = knitr::image_uri(plot_file),
+      style = "width:100%; height:auto;"
+    )
+
+  }
+
+
+
+  htmltools::browsable(
+    bslib::navset_tab(
+      id = "gca_tabs",
+
+      bslib::nav_panel(
+        title = n.of.gca,
+
+        bslib::navset_tab(
+          id = paste0("boot_tabs_", n.of.gca),
+
+          bslib::nav_panel(
+            title = "Boot plot",
+            bslib::card(
+              full_screen = TRUE,
+              fill = TRUE,
+              bslib::card_body(
+                boot_p_tag
+              )
+            )
+          ),
+
+          bslib::nav_panel(
+            title = "Boot table",
+            bslib::card(
+              full_screen = TRUE,
+              fill = TRUE,
+              bslib::card_body(
+                table1
+              )
+            )
+          ),
+
+          bslib::nav_panel(
+            title = "Boot summary",
+            bslib::card(
+              full_screen = TRUE,
+              fill = TRUE,
+              bslib::card_body(
+                table2
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+}

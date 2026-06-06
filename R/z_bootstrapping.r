@@ -1,6 +1,27 @@
 #' @include 2_update_tab.r
 NULL
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #' Estimate bootstrapping ESS
 #'
 boot_ESS <- function(new_data, WESS, n_rep, b_prop, replace = T,
@@ -120,7 +141,8 @@ boot_plot <- function(boot_res, est_data, selected_cp, information, font_size = 
 
 
   p1 <- original_info %>%
-    ggplot(aes_string(x = "x", y = "y", colour = "lv_nm")) +
+    ggplot(aes(x = !!as.name("x"), y = !!as.name("y"),
+                      colour = !!as.name("lv_nm"))) +
     geom_point(alpha = 0.2) +
 
     geom_line(data = original_pred,
@@ -224,7 +246,7 @@ boot_cutScore <- function(inp_data, WESS, n_level, empirical) { #
   pred_fit <- map(model_fit, ~ .x %>%
                     predict_gam(length_out = a1) %>%
                     select(1:3) %>%
-                    set_names(c(input$loc, "fit", "fit.se"))
+                    set_names(c("location", "fit", "fit.se"))
                     )
 
   minimizer <- function(model_pred) {

@@ -48,9 +48,9 @@ report.ESS <- function(x, what = "all") {
   } else if(what == "setup") {
 
     o <- list()
-    o$setting    <- print_setting(x$imprt_data)
-    o$itemtable1 <- print_itemtable1(x$imprt_data)
-    o$itemtable2 <- print_itemtable2(x$imprt_data)
+    o$setting    <- report_setting(x$imprt_data)
+    o$itemtable1 <- report_itemtable1(x$imprt_data)
+    o$itemtable2 <- report_itemtable2(x$imprt_data)
 
     report_setup(o)
   }
