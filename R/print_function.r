@@ -1,6 +1,6 @@
 #' S3 method
 #'
-#' @export
+#' @exportS3Method
 print.ESS <- function(x, ...) {
   cat("ESS output\n")
   cat("----------\n")
@@ -27,7 +27,9 @@ print.ESS <- function(x, ...) {
 
 
 
-
+#' S3 method
+#'
+#' @exportS3Method
 print.bootESS <- function(x) {
     x$bootResults$table2
 }

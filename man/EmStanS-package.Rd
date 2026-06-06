@@ -15,6 +15,13 @@ and cut scores are estimated by optimizing the relationship between the
 item-ALD alignments and the empirically. Under ESS, this package provides
 cut score estimation algorithm (referred to as ESS-Count and ESS-Weight).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://sooyongl.github.io/EmStanS/}
+}
+
+}
 \author{
 \strong{Maintainer}: Sooyong Lee \email{sooyongl09@utexas.edu}
 
@@ -22,6 +29,7 @@ Authors:
 \itemize{
   \item Sooyong Lee \email{sooyongl09@utexas.edu}
   \item Daniel Lewis [copyright holder]
+  \item Seung Choi
 }
 
 }

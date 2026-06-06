@@ -102,6 +102,7 @@ kable <- knitr::kable
 layout <- plotly::layout
 ggplotly <- plotly::ggplotly
 
+describe <- psych::describe
 # -------------------------------------------------------------------------
 
 fs::dir_ls("prerun/data/example_file")[1]
@@ -121,6 +122,10 @@ res <- emstans(filePath = fs::dir_ls("prerun/data/example_file")[1],
                digits = 3)
 
 res
+
+report(res, what = "summary")
+
+
 extract(res)
 
 class(res)
@@ -135,6 +140,16 @@ report(res, what = "review")
 
 report(res, what = "setup")
 
+
+extract(res, "cutscore")
+
+res0 <- update(res, "R0-All" = c(-1, 0.5))
+
+boot_res <- boostrapping(res, "R0-All")
+
+summary(boot_res)
+
+extract(boot_res)
 
 
 library(EmStanS)
@@ -157,3 +172,6 @@ res <- emstans(data = fake_data,
                median = "modal",
                loc = "Loc_RP50",
                domain = "GCA")
+
+report(res, what = "detailed")
+report(res, what = "summary")

@@ -1,26 +1,3 @@
-#' @include 2_update_tab.r
-NULL
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #' Estimate bootstrapping ESS
 #'

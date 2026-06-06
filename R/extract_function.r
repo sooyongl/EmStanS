@@ -5,7 +5,20 @@ extract <- function(x, ...) {
 
 #' S3 method
 #'
-#' @export
+#' @exportS3Method
+extract.bootESS <- function(x, what = "all",...) {
+
+  # x = boot_res
+  list(
+    bootstrapping_cutscore = x$bootResults$table1,
+    bootstrapping_summary = x$bootResults$table2,
+    bootstrapping_plot = x$bootResults$boot_p
+  )
+}
+
+#' S3 method
+#'
+#' @exportS3Method
 extract.ESS <- function(x, what = "all",...) {
 
 

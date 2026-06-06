@@ -9,7 +9,11 @@ Authors@R:
       person(given = "Sooyong",
              family = "Lee",
              email = "sooyongl09@utexas.edu",
-             role = c("aut","cre")))
+             role = c("aut","cre")),
+      person(given = "Seung",
+             family = "Choi",
+             role = c("aut"))
+             )
 Maintainer: Sooyong Lee <sooyongl09@gmail.com>
 Description: Provides functions for embedded standard setting, including data preparation,
     item-level summaries, cut score estimation, visualization, reporting, and simulation.
@@ -41,6 +45,7 @@ Imports:
     tibble,
     tidyr,
     tidyselect,
+	psych,
     utils
 Suggests:
     testthat (>= 3.0.0),
@@ -64,8 +69,10 @@ Collate:
     '2_tab3_table.r'
     '2_tab4_function.r'
     '2_tab4_table.r'
-    '2_update_tab.r'
     '4_excel_out.r'
+    '99_tab_output.R'
+    '99_update_function.R'
+    '99_update_utils.r'
     'extract_function.r'
     'main_function.r'
     'print_function.r'
@@ -74,6 +81,7 @@ Collate:
     'summary_function.r'
     'z_boot_excel.r'
     'z_bootstrapping.r'
+    'z_bootstrapping_method.r'
     'z_simulation_function.r'
     'z_splines.r'
     'z_test.r'

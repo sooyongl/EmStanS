@@ -3,7 +3,7 @@ report <- function(x, ...) {
   UseMethod("report")
 }
 
-#' @export
+#' @exportS3Method
 report.ESS <- function(x, what = "all") {
 
   if(what == "all") {

@@ -1,9 +1,10 @@
 #' @export
-boostrapping <- function(output, ...) {
-  UseMethod("boostrapping")
+bootstrapping <- function(output, ...) {
+  UseMethod("bootstrapping")
 }
 
-boostrapping.ESS <- function(output, gca_name, boot_num = 10) {
+#' @exportS3Method
+bootstrapping.ESS <- function(output, gca_name, boot_num = 10) {
   # output <- res; gca_name = "M1-All";boot_num = 10
   if(length(gca_name) > 1) {
     stop("only one `gca_name` must be selected.")

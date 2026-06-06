@@ -130,10 +130,10 @@ tab3_plots <- function(tab3, font_size = 16, pallete = "set2") {
                    alpha = .8) +
         geom_line(aes(colour = Level, linetype = Level),
                   linewidth = 1.2) +
-        # geom_label_repel(
-        geom_text(
+        geom_label_repel(
+        # geom_text(
           aes(label = scaleScore),
-                         # label.padding=.1,
+                         label.padding=.1,
                          alpha = 0.8,
                          size = geom.text.size) +
         labs(title = glue("Scale Score Cut Scores ({domain_lv})"),
@@ -182,8 +182,8 @@ tab3_plots <- function(tab3, font_size = 16, pallete = "set2") {
                   colour = Level, group = Level,
                   linetype = Level),
               linewidth = 1.5) +
-            # geom_label_repel(
-            geom_text(
+            geom_label_repel(
+            # geom_text(
               aes(label = percAtabo,
                                  x = GCA, y = percAtabo, group = Level),
                              size = geom.text.size,

@@ -1,5 +1,3 @@
-#' @include 2_update_tab.r
-NULL
 
 #' Get an excel file for bootstrapping results ready for downloading
 #'

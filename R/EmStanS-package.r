@@ -13,7 +13,7 @@
 #' @import bslib
 #' @import ggplot2
 #' @import dplyr
-#'@importFrom plotly layout ggplotly
+#' @importFrom plotly layout ggplotly
 #' @importFrom foreach foreach `%do%`
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom grid arrow unit

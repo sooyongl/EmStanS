@@ -13,6 +13,8 @@ articles:
     navbar: Tutorials
     contents:
       - getting-started
+      - specifying-manual-cut-scores
+      - bootstrapping
       # - input-data-structure
       # - interpreting-output
   # - title: Bootstrapping
