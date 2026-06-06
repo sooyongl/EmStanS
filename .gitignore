@@ -8,7 +8,6 @@ test
 rsconnect
 *.dcf
 *.dcf
-docs
 inst/doc
 CRAN-SUBMISSION
 cran-comments.md

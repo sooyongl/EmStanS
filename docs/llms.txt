@@ -1,0 +1,455 @@
+# EmStanS
+
+## Overview
+
+This package aims to support Embedded Standard Setting, calculating
+counts and weights.
+
+## Install
+
+``` r
+devtools::install_github("sooyongl/EmStanS", dependencies = T)
+```
+
+## Usage
+
+``` r
+library(EmStanS)
+```
+
+``` r
+# data <- read.csv(filePath)
+fake_data <- genFakeDataSet(ngca = 3, 
+               cor_val = 0.2,
+               n = 30,
+               nlevel = 3,
+               ntable = 5,
+               npanelist = 5,
+               sdinp = 1,
+               ecinp = 0,
+               100,300)
+#> New names:
+#> New names:
+#> • `score` -> `score...1`
+#> • `freq` -> `freq...2`
+#> • `Grade` -> `Grade...3`
+#> • `score` -> `score...4`
+#> • `freq` -> `freq...5`
+#> • `Grade` -> `Grade...6`
+
+
+
+fake_data
+#> $setup
+#> # A tibble: 3 × 7
+#>   GCA   `Content Area` `Grade Group` `Number of Tables per Room` `Level Options`
+#>   <chr> <chr>          <chr>         <chr>                       <chr>          
+#> 1 M1    Math           1             5                           Level1, Level2…
+#> 2 M2    Math           2             5                           Level1, Level2…
+#> 3 M3    Math           3             5                           Level1, Level2…
+#> # ℹ 2 more variables: SD <dbl>, EC <dbl>
+#> 
+#> $panelist
+#> # A tibble: 75 × 3
+#>   GCA   Panelist Table
+#>   <chr> <chr>    <chr>
+#> 1 M1    M1.T1.1  T1   
+#> 2 M1    M1.T1.2  T1   
+#> 3 M1    M1.T1.3  T1   
+#> 4 M1    M1.T1.4  T1   
+#> 5 M1    M1.T1.5  T1   
+#> # ℹ 70 more rows
+#> 
+#> $rating
+#> # A tibble: 2,250 × 8
+#>   GCA   Subject Grade Round Table Panelist Item_ID ALD   
+#>   <chr> <chr>   <chr> <dbl> <chr> <chr>    <chr>   <chr> 
+#> 1 M1    Math    1         1 T1    M1.T1.1  M1_1    Level1
+#> 2 M1    Math    1         1 T1    M1.T1.1  M1_2    Level2
+#> 3 M1    Math    1         1 T1    M1.T1.1  M1_3    Level1
+#> 4 M1    Math    1         1 T1    M1.T1.1  M1_4    Level2
+#> 5 M1    Math    1         1 T1    M1.T1.1  M1_5    Level1
+#> # ℹ 2,245 more rows
+#> 
+#> $item_data
+#> # A tibble: 90 × 6
+#>   GCA   Item_ID Total_points Point Order_of_Difficulty Loc_RP50
+#>   <chr> <chr>          <dbl> <dbl>               <int>    <dbl>
+#> 1 M1    M1_1               1     1                   1     101.
+#> 2 M1    M1_2               1     1                   2     116.
+#> 3 M1    M1_3               1     1                   3     116.
+#> 4 M1    M1_4               1     1                   4     119.
+#> 5 M1    M1_5               1     1                   5     126.
+#> # ℹ 85 more rows
+#> 
+#> $examineedata_data
+#> # A tibble: 229 × 9
+#>   score...1 freq...2 Grade...3 score...4 freq...5 Grade...6 score...7 freq...8
+#>       <int>    <int> <chr>         <int>    <int> <chr>         <int>    <int>
+#> 1        87        5 M1               98        7 M2              127        5
+#> 2        88        8 M1               99        9 M2              128        5
+#> 3        89        3 M1              100        3 M2              129        6
+#> 4        90        4 M1              101        4 M2              130        7
+#> 5        91        6 M1              102        7 M2              131        8
+#> # ℹ 224 more rows
+#> # ℹ 1 more variable: Grade...9 <chr>
+
+# Or you can use your own data structured by the following table.
+```
+
+``` r
+res <- emstans(data = fake_data,
+               tests = c(1,2),
+               targets = "ALD",
+               WESS = T,
+               gamest = F,
+               median = "modal",
+               loc = "Loc_RP50",
+               domain = "GCA")
+```
+
+## Summary
+
+``` r
+summary(res)
+#> ESS output
+#> ----------
+#> Individual Cut:
+#> # A tibble: 50 × 16
+#>    GCA    Table Panelist Correlation  L2_p  L3_p L2_loc L3_loc  L2_C  L2_W  L3_C
+#>    <fct>  <chr> <chr>          <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>
+#>  1 M1-All T1    M1.T1.1        0.263     8    25   149.   242.     7 326.     10
+#>  2 M1-All T1    M1.T1.2        0.126    11    26   162.   252     13 638.      8
+#>  3 M1-All T1    M1.T1.3        0.331     6    15   137.   186.     7 249.     12
+#>  4 M1-All T1    M1.T1.4        0.351     4    22   119.   228.     5  62.1    12
+#>  5 M1-All T1    M1.T1.5        0.317     9    23   150.   230.     9 310.     10
+#>  6 M1-All T2    M1.T2.1        0.175     8    28   149.   287.     7 325.      6
+#>  7 M1-All T2    M1.T2.2        0.215    10    23   152.   230.    13 608.      6
+#>  8 M1-All T2    M1.T2.3        0.248     8    25   149.   242.     7 263.      8
+#>  9 M1-All T2    M1.T2.4        0.219    13    27   170    259.    11 385.      8
+#> 10 M1-All T2    M1.T2.5        0.422     6    20   137.   216.     5 123.      9
+#>     L3_W L_sum LW_sum num_item total_item
+#>    <dbl> <dbl>  <dbl>    <dbl>      <dbl>
+#>  1  393.    17   719.       30         60
+#>  2  289     21   927.       30         60
+#>  3  447.    19   696.       30         60
+#>  4  490     17   552.       30         60
+#>  5  433.    19   744.       30         60
+#>  6  342.    13   667.       30         60
+#>  7  294.    19   902.       30         60
+#>  8  472     15   735.       30         60
+#>  9  424.    19   809.       30         60
+#> 10  453.    14   576.       30         60
+#> # ℹ 40 more rows
+#> 
+#> Meidan Cut:
+#> # A tibble: 12 × 6
+#>    GCA    Table  L2_p L2_loc  L3_p L3_loc
+#>    <fct>  <chr> <dbl>  <dbl> <dbl>  <dbl>
+#>  1 M1-All T1        8   149.    23   230.
+#>  2 M1-All T2        8   149.    25   242.
+#>  3 M1-All T3       10   152.    23   230.
+#>  4 M1-All T4        7   141     23   230.
+#>  5 M1-All T5        8   149.    24   235.
+#>  6 M1-All All       8   149.    24   235.
+#>  7 M2-All T1        5   135.    22   266.
+#>  8 M2-All T2        6   148.    19   221.
+#>  9 M2-All T3        9   164.    23   271.
+#> 10 M2-All T4        9   164.    24   273.
+#> # ℹ 2 more rows
+#> 
+#> Modal Cut:
+#> # A tibble: 12 × 15
+#>    GCA    Table Correlation  L2_p  L3_p L2_loc L3_loc  L2_C  L2_W  L3_C  L3_W
+#>    <fct>  <chr>       <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
+#>  1 M1-All T1          0.458     6    21   137.   228.     7 164      10 369. 
+#>  2 M1-All T2          0.465     6    26   137.   252      3  73.1     6 332. 
+#>  3 M1-All T3          0.173    10    23   152.   230.    15 641.      7 284  
+#>  4 M1-All T4          0.372     7    25   141    242.     7 198.      8 368. 
+#>  5 M1-All T5          0.404     5    26   126.   252      7 234.      6 196. 
+#>  6 M1-All All         0.64      5    25   126.   242.     5 118.      3  87.4
+#>  7 M2-All T1          0.413     6    24   148.   273.     5 258.      7 258. 
+#>  8 M2-All T2          0.479     2    21   119.   252.     1   0       8 414. 
+#>  9 M2-All T3          0.442     7    25   159.   273.     7 259.      8 257. 
+#> 10 M2-All T4          0.376    10    28   182.   294.     7 379.      6 149. 
+#>    L_sum LW_sum num_item total_item
+#>    <dbl>  <dbl>    <dbl>      <dbl>
+#>  1    17   533.       30         60
+#>  2     9   405        30         60
+#>  3    22   925.       30         60
+#>  4    15   567.       30         60
+#>  5    13   430        30         60
+#>  6     8   205.       30         60
+#>  7    12   516.       30         60
+#>  8     9   414.       30         60
+#>  9    15   515.       30         60
+#> 10    13   528.       30         60
+#> # ℹ 2 more rows
+#> 
+#> Average Cut:
+#> # A tibble: 12 × 6
+#>    GCA    Table  L2_p L2_loc  L3_p L3_loc
+#>    <fct>  <chr> <dbl>  <dbl> <dbl>  <dbl>
+#>  1 M1-All T1        8   143.    22   228.
+#>  2 M1-All T2       10   152.    25   247.
+#>  3 M1-All T3       10   158.    23   234.
+#>  4 M1-All T4        7   144.    23   231.
+#>  5 M1-All T5        8   148.    24   244.
+#>  6 M1-All All       8   149.    24   237.
+#>  7 M2-All T1        5   155.    22   264.
+#>  8 M2-All T2        6   144.    20   225.
+#>  9 M2-All T3        9   168.    22   258.
+#> 10 M2-All T4        9   177.    25   275.
+#> # ℹ 2 more rows
+#> 
+#> More details can be extacted using the `extract()` function
+```
+
+## Report
+
+With `what = "all"`, the combined report is provided.
+
+### Individual
+
+``` r
+report(res, what = "individual")
+```
+
+### Detailed
+
+``` r
+report(res, what = "detailed")
+```
+
+### Summary
+
+``` r
+report(res, what = "summary")
+```
+
+### Item Review
+
+``` r
+report(res, what = "review")
+```
+
+## Extract
+
+`extract()` provides the primary results of ESS as a form of
+[`list()`](https://rdrr.io/r/base/list.html).
+
+``` r
+extract(res)
+```
+
+# Package index
+
+## All functions
+
+- [`boot_ESS()`](https://sooyongl.github.io/EmStanS/reference/boot_ESS.md)
+  : Estimate bootstrapping ESS
+- [`boot_excel()`](https://sooyongl.github.io/EmStanS/reference/boot_excel.md)
+  : Get an excel file for bootstrapping results ready for downloading
+- [`boot_exceldown()`](https://sooyongl.github.io/EmStanS/reference/boot_exceldown.md)
+  : Download an excel file for bootstrapping results
+- [`boot_plot()`](https://sooyongl.github.io/EmStanS/reference/boot_plot.md)
+  : Plots for bootstrapping results
+- [`calGamMinimun()`](https://sooyongl.github.io/EmStanS/reference/calGamMinimun.md)
+  : Calculate the minimun value of GAM function
+- [`calGamOutcome()`](https://sooyongl.github.io/EmStanS/reference/calGamOutcome.md)
+  : Calculate the outcome of GAM function given x
+- [`cal_minp()`](https://sooyongl.github.io/EmStanS/reference/cal_minp.md)
+  : Calculate the minimun cut scores and cut point.
+- [`colors`](https://sooyongl.github.io/EmStanS/reference/colors.md) :
+  global colour
+- [`dataReady_setup()`](https://sooyongl.github.io/EmStanS/reference/dataReady_setup.md)
+  : dataReady_setup
+- [`data_prep()`](https://sooyongl.github.io/EmStanS/reference/data_prep.md)
+  : data_prep
+- [`data_ready()`](https://sooyongl.github.io/EmStanS/reference/data_ready.md)
+  : data_ready
+- [`dt_table_out_indi()`](https://sooyongl.github.io/EmStanS/reference/dt_table_out_indi.md)
+  : Generate DataTable for individual ESS results
+- [`dt_table_out_med()`](https://sooyongl.github.io/EmStanS/reference/dt_table_out_med.md)
+  : Generate DataTable for median ESS results
+- [`dt_table_out_mode()`](https://sooyongl.github.io/EmStanS/reference/dt_table_out_mode.md)
+  : Generate DataTable for modal ESS results
+- [`estCutScore()`](https://sooyongl.github.io/EmStanS/reference/estCutScore.md)
+  : Estimate the cut score for each data
+- [`estCutScore_manual()`](https://sooyongl.github.io/EmStanS/reference/estCutScore_manual.md)
+  : Estimate ESS cut scores based on user-given cut scores
+- [`estCutScore_mode()`](https://sooyongl.github.io/EmStanS/reference/estCutScore_mode.md)
+  : modal est cut score
+- [`estCutScore_mode_manual()`](https://sooyongl.github.io/EmStanS/reference/estCutScore_mode_manual.md)
+  : Estimate modal ESS cut scores based on user-given cut scores.
+- [`extract(`*`<bootESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/extract.bootESS.md)
+  : S3 method
+- [`extract(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/extract.ESS.md)
+  : S3 method
+- [`extract_num()`](https://sooyongl.github.io/EmStanS/reference/extract_num.md)
+  : extract_num
+- [`factor_arrange()`](https://sooyongl.github.io/EmStanS/reference/factor_arrange.md)
+  : factor_arrange
+- [`genExamineeData()`](https://sooyongl.github.io/EmStanS/reference/genExamineeData.md)
+  : Generate an examinee data
+- [`genFakeData()`](https://sooyongl.github.io/EmStanS/reference/genFakeData.md)
+  : Generate a single data set containing ALD, OOD, and location given a
+  correlation value
+- [`genFakeDataSet()`](https://sooyongl.github.io/EmStanS/reference/genFakeDataSet.md)
+  : generate fake data
+- [`genItemMetaData()`](https://sooyongl.github.io/EmStanS/reference/genItemMetaData.md)
+  : Generate an item meta data
+- [`genLoc()`](https://sooyongl.github.io/EmStanS/reference/genLoc.md) :
+  Generate location values
+- [`genPanelist()`](https://sooyongl.github.io/EmStanS/reference/genPanelist.md)
+  : Generate a panelist data
+- [`genRating()`](https://sooyongl.github.io/EmStanS/reference/genRating.md)
+  : Generate a rating data
+- [`genSetup()`](https://sooyongl.github.io/EmStanS/reference/genSetup.md)
+  : Generate a setup data
+- [`genTheta()`](https://sooyongl.github.io/EmStanS/reference/genTheta.md)
+  : generate theta
+- [`gen_average_table()`](https://sooyongl.github.io/EmStanS/reference/gen_average_table.md)
+  : gen_average_table
+- [`gen_blank_page()`](https://sooyongl.github.io/EmStanS/reference/gen_blank_page.md)
+  : gen_blank_page
+- [`gen_indi_table()`](https://sooyongl.github.io/EmStanS/reference/gen_indi_table.md)
+  : gen_indi_table
+- [`gen_median_table()`](https://sooyongl.github.io/EmStanS/reference/gen_median_table.md)
+  : gen_median_table
+- [`gen_page_data()`](https://sooyongl.github.io/EmStanS/reference/gen_page_data.md)
+  : gen_page_data
+- [`gen_tab0()`](https://sooyongl.github.io/EmStanS/reference/gen_tab0.md)
+  : ESS analysis for individual panelists
+- [`gen_tab1()`](https://sooyongl.github.io/EmStanS/reference/gen_tab1.md)
+  : ESS analysis for overall GCA
+- [`gen_tab2()`](https://sooyongl.github.io/EmStanS/reference/gen_tab2.md)
+  : Detailed ESS results
+- [`gen_tab3()`](https://sooyongl.github.io/EmStanS/reference/gen_tab3.md)
+  : Cut score summary
+- [`gen_tab4()`](https://sooyongl.github.io/EmStanS/reference/gen_tab4.md)
+  : Item review table
+- [`getColors()`](https://sooyongl.github.io/EmStanS/reference/getColors.md)
+  : colour choices for plots
+- [`getCor()`](https://sooyongl.github.io/EmStanS/reference/getCor.md) :
+  Estimate the correlation
+- [`get_data_info()`](https://sooyongl.github.io/EmStanS/reference/get_data_info.md)
+  : get_data_info
+- [`get_EC()`](https://sooyongl.github.io/EmStanS/reference/get_EC.md) :
+  get_EC
+- [`get_ID()`](https://sooyongl.github.io/EmStanS/reference/get_ID.md) :
+  get_ID
+- [`get_location()`](https://sooyongl.github.io/EmStanS/reference/get_location.md)
+  : get_location
+- [`get_lvnm()`](https://sooyongl.github.io/EmStanS/reference/get_lvnm.md)
+  : get_lvnm
+- [`get_mode()`](https://sooyongl.github.io/EmStanS/reference/get_mode.md)
+  : get_mode
+- [`get_opname1()`](https://sooyongl.github.io/EmStanS/reference/get_opname1.md)
+  : get_opname1
+- [`get_SD()`](https://sooyongl.github.io/EmStanS/reference/get_SD.md) :
+  get_SD
+- [`lv_por()`](https://sooyongl.github.io/EmStanS/reference/lv_por.md) :
+  lv_por
+- [`plot_dist_items()`](https://sooyongl.github.io/EmStanS/reference/plot_dist_items.md)
+  : Generate item distribution plots
+- [`predict_gam()`](https://sooyongl.github.io/EmStanS/reference/predict_gam.md)
+  : Get predictions from a GAM model.
+- [`print(`*`<bootESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/print.bootESS.md)
+  : S3 method
+- [`print(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/print.ESS.md)
+  : S3 method
+- [`pull_unique()`](https://sooyongl.github.io/EmStanS/reference/pull_unique.md)
+  : pull_unique
+- [`ready_average_table()`](https://sooyongl.github.io/EmStanS/reference/ready_average_table.md)
+  : ready_average_table
+- [`ready_median_output()`](https://sooyongl.github.io/EmStanS/reference/ready_median_output.md)
+  : gen_median_output
+- [`ready_median_table()`](https://sooyongl.github.io/EmStanS/reference/ready_median_table.md)
+  : ready_median_table
+- [`read_data()`](https://sooyongl.github.io/EmStanS/reference/read_data.md)
+  : read_data
+- [`remove_blank()`](https://sooyongl.github.io/EmStanS/reference/remove_blank.md)
+  : remove_blank
+- [`reorganize_examinee()`](https://sooyongl.github.io/EmStanS/reference/reorganize_examinee.md)
+  : reorganize_examinee
+- [`report_itemtable1()`](https://sooyongl.github.io/EmStanS/reference/report_itemtable1.md)
+  : report_itemtable1
+- [`report_itemtable2()`](https://sooyongl.github.io/EmStanS/reference/report_itemtable2.md)
+  : report_itemtable2
+- [`report_setting()`](https://sooyongl.github.io/EmStanS/reference/report_setting.md)
+  : report_setting
+- [`report_setup()`](https://sooyongl.github.io/EmStanS/reference/report_setup.md)
+  : report_setup
+- [`report_tab1()`](https://sooyongl.github.io/EmStanS/reference/report_tab1.md)
+  : report_tab1
+- [`report_tab2()`](https://sooyongl.github.io/EmStanS/reference/report_tab2.md)
+  : report_tab2
+- [`report_tab3()`](https://sooyongl.github.io/EmStanS/reference/report_tab3.md)
+  : report_tab3
+- [`report_tab4()`](https://sooyongl.github.io/EmStanS/reference/report_tab4.md)
+  : report_tab4
+- [`runESS()`](https://sooyongl.github.io/EmStanS/reference/runESS.md) :
+  Estimate the cut score for one level.
+- [`select_cp()`](https://sooyongl.github.io/EmStanS/reference/select_cp.md)
+  : Select the minimun point and cut score
+- [`simALD()`](https://sooyongl.github.io/EmStanS/reference/simALD.md) :
+  simulate ALD
+- [`splineFit()`](https://sooyongl.github.io/EmStanS/reference/splineFit.md)
+  : Estimate a generalized additive model (GAM) for ESS cut scores
+- [`summarize_page()`](https://sooyongl.github.io/EmStanS/reference/summarize_page.md)
+  : summarize_page
+- [`summary(`*`<bootESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/summary.bootESS.md)
+  : S3 method
+- [`summary(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/summary.ESS.md)
+  : S3 method
+- [`tab1_group_out()`](https://sooyongl.github.io/EmStanS/reference/tab1_group_out.md)
+  : tab1_group_out
+- [`tab1_group_out_all()`](https://sooyongl.github.io/EmStanS/reference/tab1_group_out_all.md)
+  : tab1_group_out_all
+- [`tab1_modal_res()`](https://sooyongl.github.io/EmStanS/reference/tab1_modal_res.md)
+  : gen_modal_table
+- [`tab1_res()`](https://sooyongl.github.io/EmStanS/reference/tab1_res.md)
+  : tab1_res output
+- [`tab2_crosstab()`](https://sooyongl.github.io/EmStanS/reference/tab2_crosstab.md)
+  : dataUse = tbl_data EC = EC; distance_res = distance_inp
+- [`tab2_plot()`](https://sooyongl.github.io/EmStanS/reference/tab2_plot.md)
+  : tab2_plot
+- [`tab2_plot_data()`](https://sooyongl.github.io/EmStanS/reference/tab2_plot_data.md)
+  : tab2_plot_data
+- [`tab2_table()`](https://sooyongl.github.io/EmStanS/reference/tab2_table.md)
+  : Generate DataTable for detailed ESS results
+- [`tab2_table_crosst()`](https://sooyongl.github.io/EmStanS/reference/tab2_table_crosst.md)
+  : Generate DataTable for crosstab
+- [`tab2_table_effpage()`](https://sooyongl.github.io/EmStanS/reference/tab2_table_effpage.md)
+  : Generate DataTable for summary table
+- [`tab3_plots()`](https://sooyongl.github.io/EmStanS/reference/tab3_plots.md)
+  : Generate VA summary plots
+- [`tab3_table_pagetb()`](https://sooyongl.github.io/EmStanS/reference/tab3_table_pagetb.md)
+  : Generate cut score summary table
+- [`tab4_table_review()`](https://sooyongl.github.io/EmStanS/reference/tab4_table_review.md)
+  : Generate DataTable obejct for item review table
+- [`update(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/update.ESS.md)
+  : Update Manual Cut Points in an ESS Object
+- [`update_tab1()`](https://sooyongl.github.io/EmStanS/reference/update_tab1.md)
+  : Manually update individual ESS results
+- [`update_tab2()`](https://sooyongl.github.io/EmStanS/reference/update_tab2.md)
+  : update_tab2
+- [`validateData()`](https://sooyongl.github.io/EmStanS/reference/validateData.md)
+  : Check input data for validation
+
+# Articles
+
+### Tutorials
+
+- [getting-started](https://sooyongl.github.io/EmStanS/articles/getting-started.md):
+
+  Basic usage of EmStanS for Embeded Standard Setting
+
+- [specifying-manual-cut-scores](https://sooyongl.github.io/EmStanS/articles/specifying-manual-cut-scores.md):
+
+  Specify manusal cut scores
+
+- [bootstrapping](https://sooyongl.github.io/EmStanS/articles/bootstrapping.md):
+
+  bootstrapping ESS
