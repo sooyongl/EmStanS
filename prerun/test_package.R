@@ -105,12 +105,12 @@ ggplotly <- plotly::ggplotly
 describe <- psych::describe
 # -------------------------------------------------------------------------
 
-fs::dir_ls("prerun/data/example_file")[1]
+file.show(fs::dir_ls("prerun/data/example_file")[1])
 
 
 
 res <- emstans(filePath = fs::dir_ls("prerun/data/example_file")[1],
-               tests = c(1,2),
+               grade = c(1,2),
                targets = "ALD",
                WESS = T,
                gamest = F,
@@ -162,6 +162,7 @@ fake_data <- genFakeDataSet(ngca = 3,
                             npanelist = 5,
                             sdinp = 1,
                             ecinp = 0,
+                            # ndomain = NULL,
                             100,300)
 
 options(warn = 2)

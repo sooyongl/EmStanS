@@ -30,6 +30,8 @@
   : Generate DataTable for median ESS results
 - [`dt_table_out_mode()`](https://sooyongl.github.io/EmStanS/reference/dt_table_out_mode.md)
   : Generate DataTable for modal ESS results
+- [`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md)
+  : Run Embedded Standard Setting Analysis
 - [`estCutScore()`](https://sooyongl.github.io/EmStanS/reference/estCutScore.md)
   : Estimate the cut score for each data
 - [`estCutScore_manual()`](https://sooyongl.github.io/EmStanS/reference/estCutScore_manual.md)
@@ -41,7 +43,7 @@
 - [`extract(`*`<bootESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/extract.bootESS.md)
   : S3 method
 - [`extract(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/extract.ESS.md)
-  : S3 method
+  : Extract Components from an ESS Object
 - [`extract_num()`](https://sooyongl.github.io/EmStanS/reference/extract_num.md)
   : extract_num
 - [`factor_arrange()`](https://sooyongl.github.io/EmStanS/reference/factor_arrange.md)
@@ -52,7 +54,7 @@
   : Generate a single data set containing ALD, OOD, and location given a
   correlation value
 - [`genFakeDataSet()`](https://sooyongl.github.io/EmStanS/reference/genFakeDataSet.md)
-  : generate fake data
+  : Generate a Fake Data Set for Embedded Standard Setting
 - [`genItemMetaData()`](https://sooyongl.github.io/EmStanS/reference/genItemMetaData.md)
   : Generate an item meta data
 - [`genLoc()`](https://sooyongl.github.io/EmStanS/reference/genLoc.md) :
@@ -129,6 +131,8 @@
   : remove_blank
 - [`reorganize_examinee()`](https://sooyongl.github.io/EmStanS/reference/reorganize_examinee.md)
   : reorganize_examinee
+- [`report(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/report.ESS.md)
+  : Extract Components from an ESS Object
 - [`report_itemtable1()`](https://sooyongl.github.io/EmStanS/reference/report_itemtable1.md)
   : report_itemtable1
 - [`report_itemtable2()`](https://sooyongl.github.io/EmStanS/reference/report_itemtable2.md)
@@ -156,9 +160,9 @@
 - [`summarize_page()`](https://sooyongl.github.io/EmStanS/reference/summarize_page.md)
   : summarize_page
 - [`summary(`*`<bootESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/summary.bootESS.md)
-  : S3 method
+  : Summary for an bootESS Object
 - [`summary(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/summary.ESS.md)
-  : S3 method
+  : Summary for an ESS Object
 - [`tab1_group_out()`](https://sooyongl.github.io/EmStanS/reference/tab1_group_out.md)
   : tab1_group_out
 - [`tab1_group_out_all()`](https://sooyongl.github.io/EmStanS/reference/tab1_group_out_all.md)

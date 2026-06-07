@@ -55,7 +55,7 @@ fake_data
 
 ```{r eval = T}
 res <- emstans(data = fake_data,
-               tests = c(1,2),
+               grade = c(1,2),
                targets = "ALD",
                WESS = T,
                gamest = F,

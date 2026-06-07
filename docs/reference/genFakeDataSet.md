@@ -1,6 +1,9 @@
-# generate fake data
+# Generate a Fake Data Set for Embedded Standard Setting
 
-generate fake data
+\`genFakeDataSet()\` generates a simulated data set that follows the
+input structure required by \`emstans()\`. The generated data can be
+used to test functions in the EmStanS package, demonstrate the expected
+data format, or run examples without using operational data.
 
 ## Usage
 
@@ -22,36 +25,78 @@ genFakeDataSet(
 
 - ngca:
 
-  a numeric indicating the number of GCA
+  A numeric value indicating the number of grade clusters or GCAs to
+  generate.
 
 - ntable:
 
-  a numeric indicating the number of tables per GCA
+  A numeric value indicating the number of tables to generate within
+  each GCA.
 
 - npanelist:
 
-  a numeric indicating the number of panelists per table
+  A numeric value indicating the number of panelists to generate within
+  each table.
 
 - cor_val:
 
-  a numeric indicating the correlation between locations and ALD
+  A numeric value indicating the intended correlation between item
+  locations and aligned level descriptions.
 
 - nlevel:
 
-  a numeric indicating the number of levels
+  A numeric value indicating the number of performance levels or aligned
+  level-description categories.
 
 - sdinp:
 
-  a numeric indicating standard deviation adjusting ESS weights
+  A numeric value used to adjust the standard deviation of the values
+  used in Weighted Embedded Standard Setting. Default is \`1\`.
 
 - ecinp:
 
-  a numeric for essencially consistent items
+  A numeric value used to control essentially consistent items in the
+  simulated item ratings. Default is \`0\`.
 
 - n:
 
-  a numeric for items
+  A numeric value indicating the number of items to generate within each
+  GCA.
 
 - ...:
 
-  a vector of arguments for `runif`
+  Additional numeric arguments passed to \`runif()\`, typically the
+  minimum and maximum score values used to generate item locations. For
+  example, \`100, 300\` generates item locations between 100 and 300.
+
+## Value
+
+A list of simulated data frames formatted for use with \`emstans()\`.
+The returned list contains test setup information, panelist information,
+item ratings, item metadata, and student data.
+
+## Details
+
+This function is mainly intended for package testing, examples, and
+demonstrations. The returned object mimics the data structure expected
+by \`emstans()\`, allowing users to inspect the required format before
+preparing their own data.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+fake_data <- genFakeDataSet(
+  ngca = 3,
+  ntable = 5,
+  npanelist = 5,
+  cor_val = 0.2,
+  nlevel = 3,
+  sdinp = 1,
+  ecinp = 0,
+  n = 30,
+  100,
+  300
+)
+} # }
+```

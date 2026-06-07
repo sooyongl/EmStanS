@@ -12,7 +12,8 @@ report_tab2(output)
 
 - output:
 
-  ESS object from `emstans`
+  ESS object from
+  [`emstans`](https://sooyongl.github.io/EmStanS/reference/emstans.md)
 
 ## Value
 

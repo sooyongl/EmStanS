@@ -2,10 +2,10 @@
 % Please edit documentation in R/summary_function.r
 \name{summary.bootESS}
 \alias{summary.bootESS}
-\title{S3 method}
+\title{Summary for an bootESS Object}
 \usage{
 \method{summary}{bootESS}(x)
 }
 \description{
-S3 method
+Summary for an bootESS Object
 }

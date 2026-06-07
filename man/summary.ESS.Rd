@@ -2,10 +2,10 @@
 % Please edit documentation in R/summary_function.r
 \name{summary.ESS}
 \alias{summary.ESS}
-\title{S3 method}
+\title{Summary for an ESS Object}
 \usage{
 \method{summary}{ESS}(x)
 }
 \description{
-S3 method
+Summary for an ESS Object
 }

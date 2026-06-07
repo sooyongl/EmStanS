@@ -1,6 +1,6 @@
-# S3 method
+# Summary for an ESS Object
 
-S3 method
+Summary for an ESS Object
 
 ## Usage
 

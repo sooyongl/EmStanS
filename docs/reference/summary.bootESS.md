@@ -1,6 +1,6 @@
-# S3 method
+# Summary for an bootESS Object
 
-S3 method
+Summary for an bootESS Object
 
 ## Usage
 

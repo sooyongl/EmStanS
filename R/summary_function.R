@@ -1,4 +1,4 @@
-#' S3 method
+#' Summary for an ESS Object
 #'
 #' @exportS3Method
 summary.ESS <- function(x) {
@@ -12,7 +12,7 @@ summary.ESS <- function(x) {
   # average: average_res_com
 }
 
-#' S3 method
+#' Summary for an bootESS Object
 #'
 #' @exportS3Method
 summary.bootESS <- function(x) {

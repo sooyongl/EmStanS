@@ -1,15 +1,115 @@
+#' Run Embedded Standard Setting Analysis
+#'
+#' `emstans()` conducts Embedded Standard Setting analysis using either an Excel
+#' file or a prepared list of data frames. The function reads test setup
+#' information, panelist information, item ratings, item metadata, and optional
+#' student data, then computes cut scores and related summary outputs.
+#'
+#' @param filePath A character string giving the path to an Excel file. The Excel
+#'   file must contain five sheets: test setup, panelist information, item
+#'   ratings, item metadata, and student data. The student data sheet may be
+#'   empty, but the other four sheets must contain the required information.
+#'   When `filePath = NULL`, `data` must be provided. See
+#'   `EmStanS::genFakeDataSet()` for an example of the required data structure.
+#'   Default is `NULL`.
+#'
+#' @param data A list of data frames containing test setup information, panelist
+#'   information, item ratings, item metadata, and student data. When
+#'   `data = NULL`, `filePath` must be provided. Default is `NULL`.
+#'
+#' @param grade Either `NULL`, a numeric vector, or a character vector indicating
+#'   which grade clusters should be used in the analysis. If `NULL`, all grade
+#'   clusters in the setup data are used. If numeric, values are interpreted as
+#'   the positions of the grade clusters to select. If character, values are
+#'   matched to the grade-cluster names. Default is `NULL`.
+#'
+#' @param domain A character string giving the column name in the setup data that
+#'   identifies grade clusters. A grade-cluster identifier usually combines the
+#'   first letter of the domain with the grade level, such as `"M1"` for Math
+#'   Grade 1 or `"R3"` for Reading Grade 3. Default is `"GCA"`.
+#'
+#' @param targets A character string giving the column name in the item-rating
+#'   data that identifies the aligned level description. This column is commonly
+#'   named `"ALD"`. Default is `"ALD"`.
+#'
+#' @param loc A character string giving the column name in the item-metadata data
+#'   that contains the item location or difficulty values used to order items.
+#'   Default is `"RP67"`.
+#'
+#' @param select_domain Either `NULL` or a character vector indicating specific
+#'   subdomains to analyze, such as vocabulary in reading or algebra in math. If
+#'   `NULL`, all subdomains are combined. Default is `NULL`.
+#'
+#' @param median A character string indicating the method used to summarize cut
+#'   scores across panelists and tables. `"modal"` uses the modal cut score, and
+#'   `"median"` uses the median cut score. Default is `"modal"`.
+#'
+#' @param WESS A logical value indicating whether Weighted Embedded Standard
+#'   Setting should be used to compute cut scores. If `FALSE`, the count-based
+#'   method is used. Default is `TRUE`.
+#'
+#' @param gamest A logical value indicating whether a generalized additive model
+#'   should be used to compute cut scores. Default is `FALSE`.
+#'
+#' @param font_size A numeric value specifying the font size used in plots.
+#'   Default is `14`.
+#'
+#' @param digits A numeric value specifying the number of decimal places used in
+#'   output tables and summaries. Default is `3`.
+#'
+#' @return An object of class `"ESS"`. The returned object contains Embedded
+#'   Standard Setting results, including cut scores, summary tables, plots, and
+#'   information used for reporting. This object can be used with S3 methods such
+#'   as `print()`, `summary()`, `report()`, and `update()`, if those methods are
+#'   defined for the `"ESS"` class.
+#'
+#' @details
+#' Either `filePath` or `data` must be supplied. If `filePath` is provided, the
+#' function reads the required Excel sheets and prepares the input data
+#' internally. If `data` is provided, it should already follow the structure
+#' expected by the EmStanS package.
+#'
+#' The function can compute cut scores using either count-based Embedded Standard
+#' Setting or Weighted Embedded Standard Setting. It can also optionally estimate
+#' cut scores using a generalized additive model.
+#'
+#' @examples
+#' \dontrun{
+#' fake_data <- EmStanS::genFakeDataSet(
+#'   ngca = 3,
+#'   cor_val = 0.2,
+#'   n = 30,
+#'   nlevel = 3,
+#'   ntable = 5,
+#'   npanelist = 5,
+#'   sdinp = 1,
+#'   ecinp = 0,
+#'   100,
+#'   300
+#' )
+#'
+#' res <- emstans(
+#'   data = fake_data,
+#'   domain = "GCA",
+#'   targets = "ALD",
+#'   loc = "RP67",
+#'   median = "modal",
+#'   WESS = TRUE,
+#'   gamest = FALSE
+#' )
+#' }
+#'
 #' @export
 emstans <- function(filePath = NULL,
                     data = NULL,
-                    tests = NULL,
-
+                    grade = NULL,
+                    domain = "GCA",
                     targets = "ALD",
+                    loc = "RP67",
+                    median = "modal",
+                    select_domain = NULL,
                     WESS = T,
                     gamest = F,
-                    median = "modal",
-                    loc = "RP67",
-                    domain = "GCA",
-                    select_domain = NULL,
                     font_size = 14,
                     digits = 3) {
 
@@ -64,17 +164,17 @@ emstans <- function(filePath = NULL,
 
   # Information ready --------------------------------------
 
-  if(is.null(tests)) {
+  if(is.null(grade)) {
 
     input$tests <-  as.character(setup_data$GCA)
 
-  } else if(is.numeric(tests)) {
+  } else if(is.numeric(grade)) {
 
-    input$tests <-  as.character(setup_data$GCA[tests])
+    input$tests <-  as.character(setup_data$GCA[grade])
 
-  } else if(is.character(tests)) {
+  } else if(is.character(grade)) {
 
-    input$tests <-  as.character(setup_data$GCA[setup_data$GCA %in% tests])
+    input$tests <-  as.character(setup_data$GCA[setup_data$GCA %in% grade])
   }
 
 
