@@ -383,7 +383,8 @@ ready_median_table <- function(tab1_res, type = "all"){
   }
 
   median_table <- median_table %>%
-    mutate_at(vars(page_name), ceiling)
+    # mutate_at(vars(page_name), ceiling)
+    mutate(across(all_of(page_name), ceiling))
 
   return(median_table)
 }

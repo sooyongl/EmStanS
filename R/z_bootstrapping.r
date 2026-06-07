@@ -274,7 +274,7 @@ boot_runESS <- function(inp_data, n_level = 3, d_alpha = 1, SD = 1, empirical = 
     select(-cut_score) %>%
     mutate(location = incon_default$cut_score)  %>%
     # select(paste0("L",n_level,"_C"), everything()) %>%
-    select(paste0("L",2:n_level,"_C"), everything()) %>%
+    select(all_of(paste0("L",2:n_level,"_C")), everything()) %>%
     data.frame()
 
   return(incon_default)

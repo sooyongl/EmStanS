@@ -74,7 +74,8 @@ genFakeDataSet <- function(ngca, ntable, npanelist, cor_val, nlevel, sdinp = 1, 
   panel <- panelist_list %>% bind_rows()
   rating <- rating_list %>% bind_rows()
   itemdata <- itemmeta_list %>% bind_rows()
-  examineedata <- examinee_list %>% Reduce(make_examinee_data, .)
+  # examineedata <- examinee_list %>% Reduce(make_examinee_data, .)
+  examineedata <- bind_rows(examinee_list)
 
   list(
     setup = setup,
@@ -265,7 +266,7 @@ make_examinee_data <- function(a1, a2) {
         t_add <- tibble(
           !!i := dummy_row
         )
-        dummy_data <- bind_cols(dummy_data, t_add)
+        dummy_data <- bind_cols(dummy_data, t_add, .name_repair = "unique")
       }
       a2 <- bind_rows(a2, dummy_data)
     } else {
@@ -275,12 +276,12 @@ make_examinee_data <- function(a1, a2) {
         t_add <- tibble(
           !!i := dummy_row
         )
-        dummy_data <- bind_cols(dummy_data, t_add)
+        dummy_data <- bind_cols(dummy_data, t_add, .name_repair = "unique")
       }
       a1 <- bind_rows(a1, dummy_data)
     }
-    bind_cols(a1, a2)
+    bind_cols(a1, a2, .name_repair = "unique")
   } else {
-    bind_cols(a1, a2)
+    bind_cols(a1, a2, .name_repair = "unique")
   }
 }

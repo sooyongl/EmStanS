@@ -428,7 +428,9 @@ dataReady_examineedata <- function(imprt_data){
   if(dim(examinee)[1] == 0) {
     examinee_data <- bind_cols(score = -999, freq = 1, gca_id)
   } else {
-    examinee_data <- suppressMessages(reorganize_examinee(examinee))
+
+    # examinee_data <- suppressMessages(reorganize_examinee(examinee))
+    examinee_data <- examinee %>% set_names(., nm = c("score", "freq","GCA"))
     examdt_name <- names(examinee_data)
 
     gca_p <- get_which(upper_remove_blank(examdt_name), "GRADE|GCA")

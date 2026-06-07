@@ -89,7 +89,7 @@ splineFit <- function(data_inp, information = NULL) {
       data_inp <- data_inp %>% select(all_of(loc_name), matches("^L[1-9]_W"))
 
     } else {
-      data_inp <- data_inp %>% select(loc_name, matches("^L[1-9]_C$"))
+      data_inp <- data_inp %>% select(all_of(loc_name), matches("^L[1-9]_C$"))
     }
 
     knots <- ifelse(nrow(data_inp) > 20, 10, round(nrow(data_inp)/2, 0))

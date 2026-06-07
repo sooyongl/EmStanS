@@ -164,6 +164,7 @@ fake_data <- genFakeDataSet(ngca = 3,
                             ecinp = 0,
                             100,300)
 
+options(warn = 2)
 res <- emstans(data = fake_data,
                tests = c(1,2),
                targets = "ALD",
@@ -172,6 +173,8 @@ res <- emstans(data = fake_data,
                median = "modal",
                loc = "Loc_RP50",
                domain = "GCA")
+
+lifecycle::last_lifecycle_warnings()
 
 report(res, what = "detailed")
 report(res, what = "summary")
