@@ -23,7 +23,7 @@ NULL
   items     = list(grade = c("GCA", "Grade"), item_id = "Item_ID",
                    domain = "Domain", order = "Order_of_Difficulty"),
   setup     = list(grade = c("GCA", "Grade"), levels = "Level Options",
-                   sd = "SD", ec = "EC"),
+                   sd = "SD", ec = c("EC", "EC Delta")),
   examinees = list(grade = c("GCA", "Grade"), score = "Score", freq = "Freq")
 )
 
