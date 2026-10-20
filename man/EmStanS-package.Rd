@@ -27,7 +27,6 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Sooyong Lee \email{sooyongl09@utexas.edu}
   \item Daniel Lewis [copyright holder]
   \item Seung Choi
 }

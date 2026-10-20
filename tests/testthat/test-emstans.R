@@ -18,8 +18,7 @@ test_that("cut scores are stable (regression snapshot)", {
 
 test_that("every grade appears in the item review", {
   res <- run_fake(WESS = FALSE)
-  expect_setequal(as.character(unique(res$distance_output$GCA)),
-                  names(extract(res, "cutscore")))
+  expect_setequal(unique(extract(res, "review")$unit), names(extract(res, "cutscore")))
 })
 
 test_that("update() assigns manual cuts by name, whatever the order", {
@@ -34,6 +33,6 @@ test_that("update() assigns manual cuts by name, whatever the order", {
 
 test_that("update() rejects unknown names and wrong lengths", {
   res <- run_fake(WESS = TRUE)
-  expect_error(update(res, `M9-All` = c(1, 2)), "Unknown grade")
+  expect_error(update(res, `M9-All` = c(1, 2)), "Unknown unit")
   expect_error(update(res, `M1-All` = 150), "needs 2 numeric")
 })

@@ -1,4 +1,4 @@
-test_that("row_modes() matches get_mode() row by row", {
+test_that("row_modes() matches the original per-item rule", {
   set.seed(2)
   for (i in 1:150) {
     n <- sample(c(1, 8, 40), 1)
@@ -12,7 +12,7 @@ test_that("row_modes() matches get_mode() row by row", {
     if (i %% 5 == 0) cors[1] <- NA
     expect_identical(
       EmStanS:::row_modes(ald, cors),
-      unname(apply(ald, 1, EmStanS:::get_mode, cors))
+      unname(apply(ald, 1, get_mode_reference, cors))
     )
   }
 })

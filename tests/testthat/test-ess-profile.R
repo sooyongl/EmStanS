@@ -30,26 +30,35 @@ test_that("selection picks lowest weight, then lowest count", {
   # Weight ties at 440 and 450 (both 60); 440 has the lower count (1 vs 2).
   prof <- data.frame(L2_C = c(4, 3, 2, 1, 2, 3, 4),
                      L2_W = c(130, 100, 80, 60, 60, 70, 150))
-  cp <- EmStanS:::cal_minp(prof)
-  expect_equal(EmStanS:::select_cp(cp, prof, WESS = TRUE, gamest = FALSE), 4)
-  # Count: unique minimum at row 4 as well.
-  expect_equal(EmStanS:::select_cp(cp, prof, WESS = FALSE, gamest = FALSE), 4)
+  expect_equal(unname(EmStanS:::select_cut_rows(prof, "weight")), 4)
+  expect_equal(unname(EmStanS:::select_cut_rows(prof, "count")), 4)
+})
+
+test_that("tie-breaking is applied separately for each cut level", {
+  # Level 2 ties on weight at rows 2 and 3 (row 3 has the lower count);
+  # level 3 has a unique minimum at row 5. The old cal_minp() mixed these
+  # candidate sets and returned row 2 for level 2.
+  prof <- data.frame(L2_C = c(5, 4, 3, 4, 6), L3_C = c(6, 5, 4, 3, 1),
+                     L2_W = c(9, 2, 2, 7, 9),  L3_W = c(9, 8, 6, 4, 1))
+  expect_equal(unname(EmStanS:::select_cut_rows(prof, "weight")), c(3, 5))
 })
 
 test_that("minimums are exact, not taken after rounding to 2 decimals", {
   # Weights that differ only in the third decimal: rounding to 2 decimals
   # would tie them and fall back to the first row.
-  prof <- data.frame(L2_C = c(1, 1, 1), L2_W = c(0.004, 0.001, 0.003))
-  prof <- EmStanS:::exact_profile(prof)
-  cp <- EmStanS:::cal_minp(prof)
-  expect_equal(EmStanS:::select_cp(cp, prof, WESS = TRUE, gamest = FALSE), 2)
+  prof <- EmStanS:::exact_profile(data.frame(L2_C = c(1, 1, 1), L2_W = c(0.004, 0.001, 0.003)))
+  expect_equal(unname(EmStanS:::select_cut_rows(prof, "weight")), 2)
 })
 
 test_that("exact_profile restores ties broken by floating-point noise", {
   prof <- data.frame(L2_C = c(2, 1), L2_W = c(0.3, 0.1 + 0.2))  # 0.1 + 0.2 != 0.3
   expect_false(prof$L2_W[1] == prof$L2_W[2])
   prof <- EmStanS:::exact_profile(prof)
-  cp <- EmStanS:::cal_minp(prof)
   # Tied on weight, so the lower count (row 2) wins rather than noise.
-  expect_equal(EmStanS:::select_cp(cp, prof, WESS = TRUE, gamest = FALSE), 2)
+  expect_equal(unname(EmStanS:::select_cut_rows(prof, "weight")), 2)
+})
+
+test_that("operational levels follow the cut pages", {
+  expect_equal(EmStanS:::operational_levels(6, c(3, 5)), c(1, 1, 2, 2, 3, 3))
+  expect_equal(EmStanS:::operational_levels(4, c(1, 4)), c(2, 2, 2, 3))
 })

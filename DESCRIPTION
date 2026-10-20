@@ -27,29 +27,23 @@ Imports:
     data.table,
     dplyr,
     DT,
-    foreach,
     ggplot2,
-    ggrepel,
     glue,
-    grid,
     htmltools,
-    kableExtra,
-    knitr,
-    magrittr,
     mgcv,
     plotly,
+    psych,
     purrr,
     readxl,
+    stats,
     stringi,
     stringr,
     tibble,
-    tidyr,
-    tidyselect,
-	psych,
     utils
 Suggests:
-    testthat (>= 3.0.0),
+    knitr,
     rmarkdown,
+    testthat (>= 3.0.0),
     withr
 License: GPL (>= 3)
 Encoding: UTF-8
@@ -58,3 +52,16 @@ VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
 Config/testthat/edition: 3
 URL: https://sooyongl.github.io/EmStanS/
+Collate: 
+    'EmStanS-package.r'
+    'ess_data.R'
+    'ess_estimate.R'
+    'ess_diagnose.R'
+    'ess_main.R'
+    'ess_methods.R'
+    'ess_plots.R'
+    'ess_profile.R'
+    'ess_report.R'
+    'validate.R'
+    'z_bootstrapping.r'
+    'z_simulation_function.r'

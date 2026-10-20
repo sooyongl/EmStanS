@@ -16,7 +16,7 @@ test_that("an ALD label outside the Level Options is an error, not LevelNA", {
   d <- fake_study()
   d$rating$ALD[1] <- "Levle2"
   expect_error(suppressMessages(emstans(data = d, loc = "Loc_RP50")),
-               "not found in the grade's Level Options")
+               "not found in the grade's level labels")
 })
 
 test_that("incomplete ratings are reported by panelist", {
@@ -29,8 +29,5 @@ test_that("incomplete ratings are reported by panelist", {
 test_that("duplicated item IDs are an error", {
   d <- fake_study()
   d$item_data$Item_ID[2] <- d$item_data$Item_ID[1]
-  # data_ready() joins items before validation runs, so dplyr warns about the
-  # many-to-many join first; moving the check ahead of the join is Stage 2.
-  expect_error(suppressWarnings(suppressMessages(emstans(data = d, loc = "Loc_RP50"))),
-               "unique")
+  expect_error(emstans(data = d, loc = "Loc_RP50"), "unique")
 })
