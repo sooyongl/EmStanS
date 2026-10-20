@@ -97,3 +97,80 @@ validateData <- function(imprt_data) {
   # return-----------------------------------
   return(val_text)
 }
+
+#' Stop with a clear message when prepared input cannot be analysed
+#'
+#' Runs on the output of [data_ready()], before any estimation. Checks the
+#' conditions the estimation relies on, so problems surface as one readable
+#' error instead of a failure deep inside the pipeline.
+#'
+#' @param data_list output of [data_ready()].
+#' @param loc name of the item location column.
+#' @return `data_list`, invisibly, if all checks pass.
+#' @keywords internal
+check_inputs <- function(data_list, loc) {
+  items   <- data_list$item_data
+  ratings <- data_list$rating_data
+  setup   <- data_list$setup_data
+
+  show <- function(x, n = 10) {
+    x <- unique(as.character(x))
+    paste0(paste(utils::head(x, n), collapse = ", "),
+           if (length(x) > n) paste0(", ... (", length(x), " in total)") else "")
+  }
+
+  # 1. Location column exists, is numeric, and is complete.
+  if (!loc %in% names(items)) {
+    num_cols <- names(items)[vapply(items, is.numeric, logical(1))]
+    stop("Location column `", loc, "` is not in the item data. ",
+         "Numeric columns available: ", show(num_cols, 20), ".", call. = FALSE)
+  }
+  if (!is.numeric(items[[loc]])) {
+    stop("Location column `", loc, "` must be numeric.", call. = FALSE)
+  }
+  if (anyNA(items[[loc]])) {
+    stop("Location column `", loc, "` is missing for item(s): ",
+         show(items$Item_ID[is.na(items[[loc]])]), ".", call. = FALSE)
+  }
+
+  # 2. Item IDs are unique (ratings are joined to items by Item_ID alone).
+  dup <- items$Item_ID[duplicated(items$Item_ID)]
+  if (length(dup) > 0) {
+    stop("Item IDs must be unique in the item data. Duplicated: ",
+         show(dup), ".", call. = FALSE)
+  }
+
+  # 3. SD and EC, when given, are numbers.
+  for (col in intersect(c("SD", "EC"), names(setup))) {
+    bad <- !is.na(setup[[col]]) & is.na(suppressWarnings(as.numeric(setup[[col]])))
+    if (any(bad)) {
+      stop("`", col, "` in the setup data is not a number for grade(s): ",
+           show(setup$GCA[bad]), ".", call. = FALSE)
+    }
+  }
+
+  # 4. Within each grade, every panelist rated exactly the grade's items,
+  #    once each. Several steps pair rows across panelists by position.
+  panel_col <- names(ratings)[grepl("User|Panel", names(ratings))][1]
+  for (g in unique(as.character(ratings$GCA))) {
+    grade_items <- as.character(items$Item_ID[as.character(items$GCA) == g])
+    r <- ratings[as.character(ratings$GCA) == g, , drop = FALSE]
+    by_panelist <- split(as.character(r$Item_ID), as.character(r[[panel_col]]))
+    for (pn in names(by_panelist)) {
+      ids <- by_panelist[[pn]]
+      missing <- setdiff(grade_items, ids)
+      extra   <- setdiff(ids, grade_items)
+      twice   <- ids[duplicated(ids)]
+      if (length(missing) + length(extra) + length(twice) > 0) {
+        stop("Ratings for panelist `", pn, "` in grade `", g, "` do not match the item data",
+             if (length(missing)) paste0("; not rated: ", show(missing)),
+             if (length(extra))   paste0("; not in item data: ", show(extra)),
+             if (length(twice))   paste0("; rated more than once: ", show(twice)),
+             ". Every panelist must rate every item in the grade exactly once.",
+             call. = FALSE)
+      }
+    }
+  }
+
+  invisible(data_list)
+}

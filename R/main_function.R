@@ -152,6 +152,7 @@ emstans <- function(filePath = NULL,
 
   # Data ready for analysis
   data_list <- data_ready(imprt_data)
+  check_inputs(data_list, loc = loc)
 
   output$data_list <- data_list
 

@@ -599,7 +599,7 @@ estCutScore_mode <- function(data, information, type = "all") {
         distinct_at(vars(matches("Panelist|User|Correlation"))) %>%
         pull(Correlation)
 
-      tabl_ALD <- apply(ext_ALD, 1, get_mode, ext_cors)
+      tabl_ALD <- row_modes(ext_ALD, ext_cors)
 
     }
 
@@ -675,3 +675,39 @@ get_mode <- function(x, corInf){
   }
 }
 
+#' Modal ALD for every item at once
+#'
+#' Vectorized equivalent of `apply(ald, 1, get_mode, cors)`. For each row
+#' (item) the most frequent ALD across columns (panelists) wins; when several
+#' ALDs tie for most frequent, the one chosen by the panelist with the highest
+#' correlation wins (stable order, so earlier panelists win equal
+#' correlations), exactly as in `get_mode()`.
+#'
+#' @param ald items x panelists table of ALD labels.
+#' @param cors panelist correlations, one per column of `ald`.
+#' @return character vector of modal ALDs, one per row.
+#' @keywords internal
+row_modes <- function(ald, cors) {
+  ald <- as.matrix(ald)
+  n <- nrow(ald)
+  if (n == 0) return(character(0))
+
+  values <- sort(unique(as.vector(ald)))
+  counts <- vapply(values, function(v) rowSums(ald == v, na.rm = TRUE), numeric(n))
+  counts <- matrix(counts, nrow = n)
+  max_count <- do.call(pmax, as.data.frame(counts))
+
+  # Walk panelists from highest to lowest correlation; the first whose ALD
+  # has the maximum count supplies the mode. With a unique maximum this is
+  # simply that value; with ties it is the highest-correlation choice.
+  result <- rep(NA_character_, n)
+  for (p in order(cors, decreasing = TRUE, method = "radix")) {
+    todo <- is.na(result)
+    if (!any(todo)) break
+    v <- ald[, p]
+    hit <- todo & !is.na(v) & counts[cbind(seq_len(n), match(v, values))] == max_count
+    hit[is.na(hit)] <- FALSE
+    result[hit] <- v[hit]
+  }
+  result
+}

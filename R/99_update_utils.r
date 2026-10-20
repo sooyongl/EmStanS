@@ -65,7 +65,7 @@ estCutScore_mode_manual <- function(data, information, manual_cutscore) {
         filter(GCA == cond[i,1] %>% pull()) %>%
         distinct(vars(matches("Panelist|User")), Correlation) %>% pull(Correlation)
 
-      tabl_ALD <- apply(ext_ALD, 1, get_mode, ext_cors)
+      tabl_ALD <- row_modes(ext_ALD, ext_cors)
     }
 
   mod_data_2 <-
@@ -115,7 +115,7 @@ estCutScore_manual <- function(inp_data, manual_cutscore, information) {
   cut_scores <-
     cut_scores %>%
     mutate_at(vars(matches("_W$")), ~ .x /SD_inp) %>%
-    mutate_all(round, 2)
+    exact_profile()
 
   cut_point    <- cal_minp(cut_scores)
   gam_est <- splineFit(cut_scores %>% mutate(!!locnm := location[[locnm]]))
@@ -133,7 +133,7 @@ estCutScore_manual <- function(inp_data, manual_cutscore, information) {
 
   data_2 <-
     left_join(data_1, bind_loc, by = "Item_ID") %>%
-    bind_cols(., cut_scores) %>%
+    bind_cols(., cut_scores %>% mutate_all(round, 2)) %>%  # display copy, as before
     relocate(., OOD, !!as.name(locnm), .after = Item_ID)
 
   cor_inc <- getCor(inp_data, data_2, selected_CP, lv_vector, locnm, ald_vector)

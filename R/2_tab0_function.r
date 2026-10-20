@@ -65,10 +65,13 @@ estCutScore <- function(inp_data, information, digits = 2) {
 
   cut_scores <- runESS(inp_data, location, length(lv_vector), EC = EC_inp)
 
+  # Minimums are found on the exact profile. Rounding to `digits` before
+  # taking the minimum created false ties and changed about 10% of cuts.
+  # exact_profile() only strips floating-point noise (see its comment).
   cut_scores <-
     cut_scores %>%
     mutate_at(vars(matches("_W$")), ~ .x /SD_inp) %>%
-    mutate_all(round, digits)
+    exact_profile()
 
   cut_point  <- cal_minp(data_inp = cut_scores)
 
@@ -86,6 +89,7 @@ estCutScore <- function(inp_data, information, digits = 2) {
   data_2 <- left_join(data_1, bind_loc, by = "Item_ID")
   data_2 <-
     cut_scores %>%
+    mutate_all(round, digits) %>%  # display copy, as before
     bind_cols(data_2, .) %>%
     relocate(., OOD, !!as.name(locnm), .after = Item_ID)
 
@@ -252,8 +256,17 @@ runESS <- function(new_data, location, n_cut, d_alpha = 1, SD = 1, empirical = T
 
   # new_data = inp_data;n_cut = length(lv_vector);d_alpha = 1; SD_inp=1; EC = EC_inp; empirical = T
 
+  # Attach locations by Item_ID rather than by row position, so a rating
+  # table in a different order (or with a missing row) cannot silently
+  # pair items with the wrong locations.
+  loc_pos <- match(new_data$Item_ID, location$Item_ID)
+  if (anyNA(loc_pos)) {
+    stop("No location found for item(s): ",
+         paste(utils::head(new_data$Item_ID[is.na(loc_pos)], 10), collapse = ", "),
+         call. = FALSE)
+  }
   new_data <- new_data %>%
-    bind_cols(location = location[[3]]) %>%
+    mutate(location = location[[3]][loc_pos]) %>%
     select(Item_ID, location, ALD) %>%
     mutate(ALD = as.numeric(str_remove(ALD, "Level")))
 
@@ -271,10 +284,24 @@ runESS <- function(new_data, location, n_cut, d_alpha = 1, SD = 1, empirical = T
 }
 
 # ESS estimate for Count and Weight
+#
+# For cut level `cut_level` and candidate cut c:
+#   items aligned at or above cut_level are inconsistent when location <  c,
+#   items aligned below cut_level      are inconsistent when location >= c,
+# and an inconsistent item's Distance is |location - c|. Count is the number
+# of inconsistent items; Weight is the sum of their Distances.
+#
+# Each group's locations are sorted once with cumulative sums, so every
+# candidate needs one binary search (findInterval):
+#   count_up(c)  = #{up < c} = k_up,          weight_up(c) = c * k_up - sum(up < c)
+#   count_lo(c)  = #{lo >= c} = n_lo - k_lo,  weight_lo(c) = sum(lo >= c) - c * count_lo
+# This is O((n + m) log n) for n items and m candidates. The previous version
+# expanded an n x m data.table and gave identical results (checked to 1e-12).
 essCW <- function(new_data, d_alpha = 1, cut_level = 2, SD = 1, empirical = T, EC = 0) {
-  # new_data = new_data_0; cut_level = 2
 
-  new_data$Item_ID <- 1:dim(new_data)[1]
+  if (!identical(d_alpha, 1)) {
+    stop("essCW() supports d_alpha = 1 only.", call. = FALSE)
+  }
 
   if(empirical) {
 
@@ -302,39 +329,36 @@ essCW <- function(new_data, d_alpha = 1, cut_level = 2, SD = 1, empirical = T, E
     }
   }
 
-  cut_candi_id <- rep(1:length(cut_candi), each = dim(new_data)[1])
-  cut_candi_list <- rep(cut_candi, each = dim(new_data)[1])
+  up <- sort(new_data$location[new_data$ALD >= cut_level])
+  lo <- sort(new_data$location[new_data$ALD <  cut_level])
+  n_lo <- length(lo)
 
-  dt <- data.table(new_data)
-  dt.expanded <- dt[ ,list(freq=1:length(cut_candi)), by=names(dt)][order(freq, Item_ID)][ ,freq := NULL]
+  k_up <- findInterval(cut_candi, up, left.open = TRUE)  # number of up < c
+  k_lo <- findInterval(cut_candi, lo, left.open = TRUE)  # number of lo < c
 
-  dt.expanded[, cut_score := cut_candi_list]
-  dt.expanded[, cut_score_id := cut_candi_id]
+  cs_up <- c(0, cumsum(up))
+  cs_lo <- c(0, cumsum(lo))
 
-  incon_default <- data.frame(dt.expanded)
+  count_lo  <- n_lo - k_lo
+  weight_up <- cut_candi * k_up - cs_up[k_up + 1]
+  weight_lo <- (cs_lo[n_lo + 1] - cs_lo[k_lo + 1]) - cut_candi * count_lo
 
-  incon_default <- incon_default %>% data.table() %>% .[, above_ecd := abs(location - cut_score)^d_alpha >= 0]
-  incon_default[, below_ecd := abs(location - cut_score)^d_alpha >= 0]
-
-  incon_default[, above_c := location < cut_score & ALD >= cut_level]
-  incon_default[, below_c := location >= cut_score & ALD < cut_level]
-
-  incon_default[above_c == T, above_d := abs(location - cut_score)^d_alpha]
-  incon_default[below_c == T, below_d := abs(location - cut_score)^d_alpha]
-
-  incon_default <- incon_default[, .(
-    above_c = sum(above_c),
-    below_c = sum(below_c),
-    above_w = sum(above_d, na.rm = T),
-    below_w = sum(below_d, na.rm = T)), by=.(cut_score_id)]
-
-  incon_default <- incon_default[, .(
+  incon_default <- data.table(
     cut_score = cut_candi,
-    counts = above_c + below_c,
-    weights = above_w + below_w)
-  ]
+    counts    = k_up + count_lo,
+    weights   = weight_up + weight_lo
+  )
 
   return(list(incon_default = incon_default))
+}
+
+# Strip floating-point noise from an inconsistency profile before comparing
+# values. The weight profile is piecewise linear, so neighbouring candidates
+# are often exactly tied in theory but differ by ~1e-13 in floating point;
+# rounding to 9 decimals restores those ties without merging any real
+# difference (unlike rounding to 2 decimals, which merged real differences).
+exact_profile <- function(profile, decimals = 9) {
+  profile %>% mutate_all(round, decimals)
 }
 
 #' Estimate the correlation

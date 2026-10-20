@@ -388,13 +388,28 @@ dataReady_rating <- function(imprt_data) {
   lv_p <- get_which(upper_remove_blank(setup_name), "LEVELOPTIONS")
   lv_vec <- map(str_split(setup[[lv_p]], ","), remove_blank_vector)
 
-  new_level_name <-
-    rating %>%
-    mutate(ALD = remove_blank_vector(ALD)) %>%
-    group_split(GCA) %>%
-    map(., ~ .x %>% pull(ALD)) %>%
-    map2(., lv_vec, ~ paste0("Level", match(.x, .y))) %>%
-    unlist(.)
+  # Map each rating's ALD label to its level number using that grade's
+  # Level Options, looked up by grade name (not by position), and stop on
+  # labels that match no option instead of silently producing "LevelNA".
+  names(lv_vec) <- as.character(setup$GCA)
+  ald_raw <- remove_blank_vector(rating$ALD)
+  gca_chr <- as.character(rating$GCA)
+  lv_num <- rep(NA_integer_, nrow(rating))
+  for (g in unique(gca_chr)) {
+    idx <- which(gca_chr == g)
+    if (!g %in% names(lv_vec)) {
+      stop("Grade `", g, "` appears in the ratings but not in the setup data.", call. = FALSE)
+    }
+    lv_num[idx] <- match(ald_raw[idx], lv_vec[[g]])
+  }
+  if (anyNA(lv_num)) {
+    bad <- unique(data.frame(GCA = gca_chr, ALD = ald_raw)[is.na(lv_num), ])
+    stop("ALD label(s) not found in the grade's Level Options: ",
+         paste0(utils::head(paste0(bad$GCA, ": \"", bad$ALD, "\""), 10), collapse = ", "),
+         ". Allowed for ", bad$GCA[1], ": ", paste(lv_vec[[bad$GCA[1]]], collapse = ", "), ".",
+         call. = FALSE)
+  }
+  new_level_name <- paste0("Level", lv_num)
 
   rating_name[panel_p] <- "Panelist"
   rating[[ald_p]] <- new_level_name
