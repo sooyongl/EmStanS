@@ -4,10 +4,10 @@
 \alias{update.ESS}
 \title{Update Manual Cut Points in an ESS Object}
 \usage{
-\method{update}{ESS}(output, ...)
+\method{update}{ESS}(object, ...)
 }
 \arguments{
-\item{output}{An object of class `ESS`.}
+\item{object}{An object of class `ESS`.}
 
 \item{...}{Named numeric vectors of manual cut scores Each argument should
 be supplied in the form `name = c(lower, upper)` or

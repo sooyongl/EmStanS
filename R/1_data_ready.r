@@ -429,8 +429,10 @@ dataReady_examineedata <- function(imprt_data){
     examinee_data <- bind_cols(score = -999, freq = 1, gca_id)
   } else {
 
-    # examinee_data <- suppressMessages(reorganize_examinee(examinee))
-    examinee_data <- examinee %>% set_names(., nm = c("score", "freq","GCA"))
+    # Wide layout (repeated Score/Freq/Grade blocks) is stacked into one
+    # long score/freq/GCA table; a 3-column long layout passes through.
+    examinee_data <- suppressMessages(reorganize_examinee(examinee))
+    examinee_data <- examinee_data %>% set_names(., nm = c("score", "freq","GCA"))
     examdt_name <- names(examinee_data)
 
     gca_p <- get_which(upper_remove_blank(examdt_name), "GRADE|GCA")

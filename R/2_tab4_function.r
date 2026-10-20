@@ -43,11 +43,11 @@ gen_tab4 <- function(tab1, tab2, information){
 
     target_names <- dataUse_1$ALD
 
-    lv_name <- target_names %>% unique() %>% sort()
-    #
-    given_n <- c(1:length(lv_name))
-    length_n <- ifelse(length(given_n) == 1, 2, length(given_n))
-    targets_n <- match(target_names, lv_name)
+    # Level number comes from the label itself ("Level3" -> 3), not from its
+    # rank among the levels that happen to appear in this grade; otherwise a
+    # grade with no Level1 items would shift every comparison by one level.
+    targets_n <- extract_num(target_names)
+    length_n <- length(cutpoint_inp) + 1
 
     er <- length(target_names)
     review_table <-
@@ -61,8 +61,11 @@ gen_tab4 <- function(tab1, tab2, information){
         c_bel <- which(targets_n[0:(cr - 1)] >= n)
         c_abo <- (which(targets_n[cr_abo:er] < n) - 1) + cr_abo
 
-        a1 <- dataUse_1[c(c_bel, c_abo), ] %>% mutate(item_status = "inc")
-        a2 <- dataUse_1[-c(c_bel, c_abo), ] %>% mutate(item_status = "cons")
+        # Logical index: with no inconsistent items, dataUse_1[-integer(0), ]
+        # would select zero rows and drop the whole grade.
+        is_inc <- seq_len(er) %in% c(c_bel, c_abo)
+        a1 <- dataUse_1[is_inc, ] %>% mutate(item_status = "inc")
+        a2 <- dataUse_1[!is_inc, ] %>% mutate(item_status = "cons")
 
         a3 <- bind_rows(a2, a1)
         a3
@@ -152,5 +155,6 @@ gen_tab4 <- function(tab1, tab2, information){
 # Helper functions --------------------------------------
 #' extract_num
 extract_num <- function(vectorInp){
-  as.numeric(str_extract(vectorInp, "[[:digit:]]"))
+  # "+" so that Level10 reads as 10, not 1
+  as.numeric(str_extract(vectorInp, "[[:digit:]]+"))
 }

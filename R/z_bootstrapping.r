@@ -83,7 +83,7 @@ boot_plot <- function(boot_res, est_data, selected_cp, information, font_size = 
       by = "id"
     )
 
-  OLV <- paste0("Level",str_extract(level_vars, "[0-9]"))
+  OLV <- paste0("Level",str_extract(level_vars, "[0-9]+"))
 
   original_cut <-
     est_data %>%

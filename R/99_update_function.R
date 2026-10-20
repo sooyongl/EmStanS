@@ -5,7 +5,7 @@
 #' vectors, where each name identifies a model, domain, scale, or other
 #' component used in the `ESS` object.
 #'
-#' @param output An object of class `ESS`.
+#' @param object An object of class `ESS`.
 #' @param ... Named numeric vectors of manual cut scores Each argument should
 #'   be supplied in the form `name = c(lower, upper)` or
 #'   `name = c(cp1, cp2, ...)`. For example, `M1 = c(100, 200)` specifies manual
@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' ess2 <- update.ESS(
+#' ess2 <- update(
 #'   ess,
 #'   M1 = c(100, 200),
 #'   M2 = c(56, 170)
@@ -30,7 +30,8 @@
 #' }
 #'
 #' @export
-update.ESS <- function(output, ...) {
+update.ESS <- function(object, ...) {
+  output <- object
   # ... : Manual cuts corresponding to the panel
   # extract(res, "cutscore")
 
@@ -59,9 +60,21 @@ update.ESS <- function(output, ...) {
   # manual_cp <-
     # modal_selected_cs_all[which(names(modal_selected_cs_all) %in% names(manual_cutpoint))] <- updates
 
-  updated_which <- which(names(modal_selected_cs_all) %in% names(updates))
-  for(ii in seq_along(updated_which)) {
-    modal_selected_cs_all[[updated_which[[ii]]]] = updates[[ii]]
+  unknown <- setdiff(names(updates), names(modal_selected_cs_all))
+  if (length(unknown) > 0) {
+    stop("Unknown grade name(s): ", paste0("`", unknown, "`", collapse = ", "),
+         ". Available: ", paste0("`", names(modal_selected_cs_all), "`", collapse = ", "),
+         call. = FALSE)
+  }
+
+  # Assign by name, so the order of arguments does not matter.
+  for (nm in names(updates)) {
+    n_cut <- length(modal_selected_cs_all[[nm]])
+    if (!is.numeric(updates[[nm]]) || length(updates[[nm]]) != n_cut) {
+      stop("`", nm, "` needs ", n_cut, " numeric cut score(s), got ",
+           length(updates[[nm]]), ".", call. = FALSE)
+    }
+    modal_selected_cs_all[[nm]] <- updates[[nm]]
   }
   manual_cs <- modal_selected_cs_all
 
