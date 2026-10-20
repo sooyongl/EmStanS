@@ -122,7 +122,7 @@ cal_minp <- function(data_inp) {
   o.ver <- matrix(
     unlist(expand.grid(minimun_points[1:(length(minimun_points)/2)])),
     ncol = (length(minimun_points)/2),
-    byrow = T
+    byrow = FALSE  # expand.grid is column-major; byrow = TRUE mixed levels' candidates
   ) %>%
     data.frame(.) %>%
     set_names(.,
@@ -134,7 +134,7 @@ cal_minp <- function(data_inp) {
       )
     ),
     ncol = (length(minimun_points)/2),
-    byrow = T
+    byrow = FALSE  # expand.grid is column-major; byrow = TRUE mixed levels' candidates
   ) %>%
     data.frame(.) %>%
     set_names(.,
