@@ -17,5 +17,9 @@
 #' @importFrom stringr str_extract str_remove
 #' @importFrom tibble tibble as_tibble
 #' @importFrom data.table data.table
+#' @importFrom stats runif rnorm rpois sd var formula
 #' @keywords internal
 "_PACKAGE"
+
+# Column names used in dplyr/data-frame expressions.
+utils::globalVariables(c(".", ":=", "Item_ID", "cut_score", "domain", "location"))

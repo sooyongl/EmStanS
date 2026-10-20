@@ -1,6 +1,7 @@
 
 #' Estimate bootstrapping ESS
 #'
+#' @noRd
 boot_ESS <- function(new_data, WESS, n_rep, b_prop, replace = T,
                      keep.sample = F, empirical = F, n_level) {
   # n_rep =  5; b_prop = 1 ; replace = T; keep.sample = F; empirical = F

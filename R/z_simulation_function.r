@@ -145,6 +145,7 @@ genFakeDataSet <- function(ngca, ntable, npanelist, cor_val, nlevel, sdinp = 1, 
 
 # Helper function -------------------------------------------
 #' Generate a single data set containing ALD, OOD, and location given a correlation value
+#' @noRd
 genFakeData <- function(fun, cor_value, nlevel, ...) {
 
   location <- genLoc(fun, ...)
@@ -158,6 +159,7 @@ genFakeData <- function(fun, cor_value, nlevel, ...) {
 
 
 #' generate theta
+#' @noRd
 genTheta <- function(theta, mean_vec, cor_mat) {
 
   stopifnot( length(mean_vec) == dim(cor_mat)[2] )
@@ -174,7 +176,7 @@ genTheta <- function(theta, mean_vec, cor_mat) {
 
   n <- ifelse(is.null(dim(theta)), length(theta), dim(theta)[1])
   k <- ncol(cor_mat)
-  x <- matrix( rnorm(n*k), nc=k )
+  x <- matrix( rnorm(n*k), ncol=k )
   x[,seq_len(n_col)] <- theta
 
   y <- x %*% solve(chol(var(x))) %*% chol(cor_mat) # cor(y)
@@ -187,6 +189,7 @@ genTheta <- function(theta, mean_vec, cor_mat) {
 
 
 #' simulate ALD
+#' @noRd
 simALD <- function(existing_theta, cor_value, nlevel) {
   given_correlation <- matrix(c(
     1, cor_value,
@@ -201,6 +204,7 @@ simALD <- function(existing_theta, cor_value, nlevel) {
 }
 
 #' Generate location values
+#' @noRd
 genLoc <- function(fun, ...){
   existing_theta <- match.fun(fun)(...)
   existing_theta <- sort(existing_theta)
@@ -209,6 +213,7 @@ genLoc <- function(fun, ...){
 
 
 #' Generate a setup data
+#' @noRd
 genSetup <- function(sim_data, GCA, table_inp, sdinp, ecinp) {
 
   ALD <- factor(paste0("Level",sim_data[["ALD"]]))
@@ -226,6 +231,7 @@ genSetup <- function(sim_data, GCA, table_inp, sdinp, ecinp) {
 }
 
 #' Generate a panelist data
+#' @noRd
 genPanelist <- function(sim_data, gca_inp, panel_id, table_id) {
 
   tibble(
@@ -236,6 +242,7 @@ genPanelist <- function(sim_data, gca_inp, panel_id, table_id) {
 }
 
 #' Generate a rating data
+#' @noRd
 genRating <- function(sim_data, gca_inp, panel_id, table_id) {
 
   Item_ID <- sim_data[["Item_ID"]]
@@ -254,6 +261,7 @@ genRating <- function(sim_data, gca_inp, panel_id, table_id) {
 }
 
 #' Generate an item meta data
+#' @noRd
 genItemMetaData <- function(sim_data, GCA) {
   # GCA = gca_inp
   Item_ID <- sim_data[["Item_ID"]]
@@ -294,6 +302,7 @@ genItemMetaData <- function(sim_data, GCA) {
 }
 
 #' Generate an examinee data
+#' @noRd
 genExamineeData <- function(sim_data, GCA) {
   location <- sim_data[["location"]]
   examinee_score_range<- round(c(min(location) - 0.25*sd(location) , max(location) + 0.25*sd(location)),0)

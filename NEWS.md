@@ -1,6 +1,57 @@
-# EmStanS (development version)
+# EmStanS 0.1.0.9000
 
-## Changes to results
+## Stage 2: new structure
+
+### New input options
+
+* `ess_data()` builds the input from data frames or CSV files with any
+  column names: columns are mapped by name or position with `columns =`.
+  Only ratings and items are required; level labels, SD and EC can come
+  from a setup table, from the `levels`, `sd` and `ec` arguments, or both
+  (arguments win). `ess_read_excel()` reads the EmStanS workbook by sheet
+  name. `emstans(data = )` accepts either, or the old list of data frames.
+* Level labels are carried through to every table, plot and report, in
+  level order, and may differ by grade.
+* Ratings with several rounds are analysed separately by grade and round
+  (units such as `R1-All Round 2`).
+* `plot()` draws the inconsistency profile of a unit's modal result, or cut
+  scores and impact across grades.
+
+### Changes to results
+
+* When a cut level had tied minima, the old `cal_minp()` mixed its
+  candidates with another level's, so the tie rule (lower weight, then
+  lower count, then earlier item) was not applied. It is now applied for
+  each level separately. In the example studies this changed one cut in
+  aasr (R1, first cut, -0.9407 to -0.9351) and one in the simulated data.
+* The EC-adjusted crosstab took level numbers from the levels present in a
+  grade (the same bug fixed in the item review in Stage 1).
+* Averages are rounded once from exact values; the old code rounded to 4
+  decimals first, which moved one average cut in the Maine study by 0.01.
+
+### Changes to the result object
+
+* `emstans()` returns plain tables (panelist, modal, median and average
+  cuts; agreement; item review; impact) plus the input data and settings.
+  Code that read internal elements such as `res$tab1` must use `extract()`.
+* `extract()` returns long tables with level labels; `extract(res,
+  "cutscore")` names each cut by the level it opens (for example `M`, `L`).
+* `bootstrapping()` gains a `seed` argument and reports the underlying error
+  when every sample fails. Its results are tables from `extract()`; the
+  Excel export (`boot_excel()`) was removed.
+
+### Performance and size
+
+* No HTML is built when `emstans()` runs; `report()` builds it on demand.
+  Every example study now runs in about a second or less, including the
+  report (previously up to 47 seconds).
+* About 4,400 lines of code removed. Dependencies dropped: foreach, ggrepel,
+  grid, kableExtra, tidyr, tidyselect, magrittr; knitr moved to Suggests.
+
+## Stage 1
+
+
+### Changes to results
 
 * Cut scores are now taken from the exact minimum of the ESS inconsistency
   profile. Previously the profile (weights divided by SD) was rounded to two
@@ -12,7 +63,7 @@
   so ties in the exact profile are still broken by the lower count, then the
   lower cut.
 
-## Bug fixes
+### Bug fixes
 
 * The package installs on case-sensitive file systems (macOS, Linux): the
   stale `Collate` field in DESCRIPTION has been removed.
@@ -29,7 +80,7 @@
 * Item locations are attached to ratings by `Item_ID` rather than by row
   position.
 
-## Input checks
+### Input checks
 
 * `emstans()` now stops with a clear message when the location column is
   missing, non-numeric or incomplete, when item IDs are duplicated, when SD
@@ -37,7 +88,7 @@
   Options (previously it became `LevelNA`), or when a panelist did not rate
   every item in the grade exactly once.
 
-## Performance
+### Performance
 
 * ESS-Count and ESS-Weight profiles are computed with sorted cumulative sums
   instead of an items x candidates table (identical results; 30x to 3,700x
@@ -46,7 +97,7 @@
   results; about 1,000x faster for that step).
 * End to end, typical studies run about 2x faster.
 
-## Tests
+### Tests
 
 * Added a testthat suite: hand-computed and brute-force checks of the
   Count/Weight profiles and the selection rule, equivalence of the modal ALD

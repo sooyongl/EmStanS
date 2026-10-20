@@ -46,6 +46,7 @@ summary.ESS <- function(object, ...) {
   invisible(out)
 }
 
+#' @rdname extract.ESS
 #' @export
 extract <- function(x, ...) {
   UseMethod("extract")
@@ -117,6 +118,7 @@ update.ESS <- function(object, ...) {
   ess_compute(object$data, object$units, object$settings, manual = manual)
 }
 
+#' @rdname bootstrapping.ESS
 #' @export
 bootstrapping <- function(output, ...) {
   UseMethod("bootstrapping")

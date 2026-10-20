@@ -1,6 +1,7 @@
 #' @include ess_plots.R
 NULL
 
+#' @rdname report.ESS
 #' @export
 report <- function(x, ...) {
   UseMethod("report")
@@ -105,7 +106,7 @@ crosstab_html <- function(ct) {
   htmltools::tags$table(
     class = "table table-sm table-bordered text-center",
     htmltools::tags$thead(htmltools::tags$tr(
-      htmltools::tags$th("Empirical ↓ / Aligned →"),
+      htmltools::tags$th("Empirical \u2193 / Aligned \u2192"),
       lapply(lv, htmltools::tags$th), htmltools::tags$th("Total"))),
     htmltools::tags$tbody(rows, htmltools::tags$tr(
       htmltools::tags$th("Total"),
@@ -120,8 +121,8 @@ agreement_html <- function(s) {
     htmltools::tags$tbody(
       htmltools::tags$tr(htmltools::tags$td("Agree"), htmltools::tags$td(s$agree), htmltools::tags$td(pct(s$agree))),
       htmltools::tags$tr(htmltools::tags$td("Disagree"), htmltools::tags$td(s$disagree), htmltools::tags$td(pct(s$disagree))),
-      htmltools::tags$tr(htmltools::tags$td(" adjacent levels"), htmltools::tags$td(s$adjacent), htmltools::tags$td(pct(s$adjacent))),
-      htmltools::tags$tr(htmltools::tags$td(" non-adjacent"), htmltools::tags$td(s$discrepant), htmltools::tags$td(pct(s$discrepant))),
+      htmltools::tags$tr(htmltools::tags$td("\u2003adjacent levels"), htmltools::tags$td(s$adjacent), htmltools::tags$td(pct(s$adjacent))),
+      htmltools::tags$tr(htmltools::tags$td("\u2003non-adjacent"), htmltools::tags$td(s$discrepant), htmltools::tags$td(pct(s$discrepant))),
       htmltools::tags$tr(htmltools::tags$td("Weighted kappa"), htmltools::tags$td(round(s$weighted_kappa, 2)), htmltools::tags$td(""))))
 }
 
