@@ -131,8 +131,7 @@ report_detailed <- function(x, tb) {
     u <- x$units[[uid]]
     ct <- tb$crosstab[tb$crosstab$unit == uid, ]
     ag <- tb$agreement[tb$agreement$unit == uid, ]
-    prof <- cbind(item_id = u$item_id, page = seq_along(u$item_id), location = u$location,
-                  x$profiles[[uid]])
+    prof <- labelled_profile(x, uid)
     bslib::nav_panel(uid,
       report_card("Inconsistency profile (modal alignment)", plotly::ggplotly(plot_profile(x, uid))),
       bslib::layout_columns(
@@ -142,7 +141,7 @@ report_detailed <- function(x, tb) {
         report_card(sprintf("Counting essentially consistent items as agreeing (EC = %s)", u$ec),
              crosstab_html(ct[ct$type == "ec", ]), agreement_html(ag[ag$type == "ec", ]))
       ),
-      report_card("Profile values", report_dt(prof, x$settings$digits))
+      report_card("Inconsistency of each candidate cut", report_dt(prof, x$settings$digits))
     )
   })
   do.call(bslib::navset_pill, tabs)

@@ -76,7 +76,7 @@ extract.ESS <- function(x, what = "all", ...) {
          detailed   = detailed,
          summary    = tb$impact,
          review     = tb$review,
-         profile    = x$profiles,
+         profile    = stats::setNames(lapply(names(x$units), labelled_profile, x = x), names(x$units)),
          all        = list(cutscore = modal_cut_scores(x), individual = individual,
                            detailed = detailed, summary = tb$impact, review = tb$review))
 }

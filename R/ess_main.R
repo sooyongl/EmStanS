@@ -196,3 +196,14 @@ modal_cut_scores <- function(x) {
   })
   stats::setNames(out, names(x$units))
 }
+
+# Profile of a unit's modal result with labelled columns, e.g. "M count".
+labelled_profile <- function(x, unit) {
+  u <- x$units[[unit]]
+  prof <- x$profiles[[unit]]
+  k <- as.integer(sub("^L([0-9]+)_[CW]$", "\\1", names(prof)))
+  what <- ifelse(grepl("_C$", names(prof)), "count", "weight")
+  names(prof) <- paste(as.character(level_label(x, u$grade, k)), what)
+  cbind(data.frame(item_id = u$item_id, page = seq_along(u$item_id), location = u$location,
+                   stringsAsFactors = FALSE), prof)
+}
