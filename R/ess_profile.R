@@ -15,13 +15,18 @@ NULL
 #   count_lo(c)  = #{lo >= c} = n_lo - k_lo,  weight_lo(c) = sum(lo >= c) - c * count_lo
 # This is O((n + m) log n) for n items and m candidates. The previous version
 # expanded an n x m data.table and gave identical results (checked to 1e-12).
-essCW <- function(new_data, d_alpha = 1, cut_level = 2, SD = 1, empirical = TRUE, EC = 0) {
+essCW <- function(new_data, d_alpha = 1, cut_level = 2, SD = 1, empirical = TRUE, EC = 0,
+                  candidates = NULL) {
 
   if (!identical(d_alpha, 1)) {
     stop("essCW() supports d_alpha = 1 only.", call. = FALSE)
   }
 
-  if(empirical) {
+  if (!is.null(candidates)) {
+
+    cut_candi <- candidates
+
+  } else if(empirical) {
 
     cut_candi <- new_data$location
 

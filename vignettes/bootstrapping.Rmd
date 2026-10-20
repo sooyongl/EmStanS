@@ -36,7 +36,6 @@ library(EmStanS)
 ```
 
 ```{r eval = T}
-# data <- read.csv(filePath)
 fake_data <- genFakeDataSet(ngca = 3, 
                cor_val = 0.2,
                n = 30,
@@ -56,23 +55,32 @@ fake_data
 
 ```{r eval = T}
 res <- emstans(data = fake_data,
-               grade = c(1,2),
-               targets = "ALD",
-               WESS = T,
-               gamest = F,
-               median = "modal",
-               loc = "Loc_RP50",
-               domain = "GCA")
+               grades = c(1, 2),
+               location = "Loc_RP50",
+               method = "weight",
+               smooth = FALSE)
 
 ```
 
 
 ## Bootstrapping
 
-- Only one GCA feasible
+`bootstrapping()` resamples one unit's items with replacement (each keeping
+its location and modal aligned level) and re-estimates the cut scores in
+every sample. One unit at a time; `seed` makes the draws reproducible.
 
 ```{r eval = T}
-boot_res <- bootstrapping(res, "M1-All", 10)
+boot_res <- bootstrapping(res, "M1-All", n = 100, seed = 1)
+boot_res
+```
+
+By default each sample uses the sampled items' locations as candidate cuts
+and takes the exact ESS minimum, the same estimator as `emstans()`. The
+earlier EmStanS bootstrap, a jittered grid of candidate cuts with a
+GAM-smoothed minimum, is available with `grid = "jittered"`:
+
+```{r eval = T}
+bootstrapping(res, "M1-All", n = 30, seed = 1, grid = "jittered")
 ```
 
 

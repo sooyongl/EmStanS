@@ -11,85 +11,140 @@ NULL
 #' modal result of each grade, the function also reports agreement between
 #' aligned and empirical levels, an item review, and impact data.
 #'
-#' @param filePath Path to an EmStanS Excel workbook (sheets Setup,
-#'   Panelists, Ratings, ItemMetaData, ExamineeMetaData). Either `filePath`
-#'   or `data` must be given.
+#' @param file Path to an EmStanS Excel workbook (sheets Setup, Panelists,
+#'   Ratings, ItemMetaData, ExamineeMetaData). Either `file` or `data` must be
+#'   given.
 #' @param data An object from [ess_data()] or [ess_read_excel()], or a list
 #'   of data frames in the workbook's sheet order (setup, panelists, ratings,
 #'   item data, examinee data).
-#' @param grade Grades to analyse: `NULL` for all, a numeric vector of
+#' @param grades Grades to analyse: `NULL` for all, a numeric vector of
 #'   positions, or a character vector of grade names. Default `NULL`.
-#' @param domain Item subsets to analyse: `"GCA"` for all items of each grade,
-#'   `"Domain"` for each content domain separately, or both. Default `"GCA"`.
-#' @param targets Name of the ratings column holding the aligned level.
-#'   Default `"ALD"`.
-#' @param loc Name of the item location column, such as `"RP67"` or
+#' @param location Name of the item location column, such as `"RP67"` or
 #'   `"RP50"`. Default `"RP67"`.
-#' @param median Reserved; cut scores are always reported as modal, median
-#'   and average.
-#' @param select_domain With `domain = "Domain"`, the domains to analyse.
-#'   `NULL` analyses every domain.
-#' @param WESS `TRUE` for ESS-Weight (minimise the summed distance of
-#'   inconsistent items), `FALSE` for ESS-Count (minimise their number).
-#'   Default `TRUE`.
-#' @param gamest If `TRUE`, cut scores are the minima of a GAM-smoothed
-#'   inconsistency profile. Default `FALSE`.
+#' @param method `"weight"` for ESS-Weight (minimise the summed distance of
+#'   inconsistent items) or `"count"` for ESS-Count (minimise their number).
+#'   Default `"weight"`.
+#' @param smooth If `TRUE`, cut scores are the minima of a GAM-smoothed
+#'   inconsistency profile instead of the exact minima. Default `FALSE`.
+#' @param by_domain If `TRUE`, each content domain (the item data's Domain
+#'   column) is also analysed separately, in addition to all items of each
+#'   grade. Default `FALSE`.
+#' @param domains With `by_domain = TRUE`, the domains to analyse; `NULL` for
+#'   all of them.
 #' @param font_size Font size for plots. Default `14`.
 #' @param digits Decimal places in printed tables. Default `3`.
+#' @param ... Former argument names, still accepted with a warning. All
+#'   arguments after `data` must be named in full. Former names:
+#'   `filePath` (now `file`), `grade` (`grades`), `loc` (`location`), `WESS`
+#'   (`method`), `gamest` (`smooth`), `domain` and `select_domain`
+#'   (`by_domain`, `domains`), `targets` (use the `columns` argument of
+#'   [ess_data()]) and `median` (no longer needed: modal, median and average
+#'   cuts are always reported).
 #'
 #' @return An object of class `"ESS"`. Use [extract()] to get its tables,
-#'   [report()] for an HTML report, [update()] to set cut scores manually and
-#'   [bootstrapping()] for bootstrap cut scores.
+#'   [report()] for an HTML report, [plot()] for plots, [update()] to set cut
+#'   scores manually and [bootstrapping()] for bootstrap cut scores.
 #'
 #' @examples
 #' \dontrun{
-#' res <- emstans(filePath = "study.xlsx", loc = "RP67")
+#' res <- emstans("study.xlsx", location = "RP67")
 #' res
 #' extract(res, "cutscore")
 #' report(res)
 #'
+#' # ESS-Count, and each content domain separately
+#' emstans("study.xlsx", method = "count", by_domain = TRUE)
+#'
 #' # CSV input with custom column names and level labels
 #' d <- ess_data(ratings = "ratings.csv", items = "items.csv",
 #'               levels = c("Basic", "Intermediate", "Advanced"))
-#' res <- emstans(data = d, loc = "RP50")
+#' res <- emstans(data = d, location = "RP50")
 #' }
 #' @export
-emstans <- function(filePath = NULL,
+emstans <- function(file = NULL,
                     data = NULL,
-                    grade = NULL,
-                    domain = "GCA",
-                    targets = "ALD",
-                    loc = "RP67",
-                    median = "modal",
-                    select_domain = NULL,
-                    WESS = TRUE,
-                    gamest = FALSE,
+                    ...,
+                    grades = NULL,
+                    location = "RP67",
+                    method = c("weight", "count"),
+                    smooth = FALSE,
+                    by_domain = FALSE,
+                    domains = NULL,
                     font_size = 14,
                     digits = 3) {
+  # Arguments after `...` must be named in full, so former names such as
+  # `loc` or `domain` are never partially matched to `location` or `domains`.
 
-  if (is.null(filePath) && is.null(data)) {
-    stop("Either `filePath` or `data` must be provided.", call. = FALSE)
+  old <- list(...)
+  columns <- NULL
+  if (length(old)) {
+    a <- emstans_old_args(old, method_missing = missing(method))
+    if (!is.null(a$file)) file <- a$file
+    if (!is.null(a$grades)) grades <- a$grades
+    if (!is.null(a$location)) location <- a$location
+    if (!is.null(a$method)) method <- a$method
+    if (!is.null(a$smooth)) smooth <- a$smooth
+    if (!is.null(a$by_domain)) by_domain <- a$by_domain
+    if (!is.null(a$domains)) domains <- a$domains
+    columns <- a$columns
   }
-  columns <- if (!identical(targets, "ALD")) list(ratings = list(level = targets))
+  method <- match.arg(method)
+
+  if (is.null(file) && is.null(data)) {
+    stop("Either `file` or `data` must be provided.", call. = FALSE)
+  }
 
   d <- if (!is.null(data)) {
     if (inherits(data, "ess_data")) data else as_ess_data(data, columns = columns)
   } else {
-    ess_read_excel(filePath, columns = columns)
+    ess_read_excel(file, columns = columns)
   }
 
-  settings <- list(loc = loc, method = if (isTRUE(WESS)) "weight" else "count",
-                   gamest = isTRUE(gamest), domain = domain,
-                   select_domain = select_domain, font_size = font_size,
-                   digits = digits, source = filePath)
+  settings <- list(location = location, method = method, smooth = isTRUE(smooth),
+                   by_domain = isTRUE(by_domain), domains = domains,
+                   font_size = font_size, digits = digits, source = file)
 
-  units <- ess_units(d, loc, domain = domain, select_domain = select_domain, grades = grade)
+  units <- ess_units(d, location, by_domain = by_domain, domains = domains, grades = grades)
   ess_compute(d, units, settings)
+}
+
+# Translate former argument names, with one warning listing the changes.
+emstans_old_args <- function(old, method_missing = TRUE) {
+  known <- c("filePath", "grade", "loc", "WESS", "gamest", "domain", "select_domain",
+             "targets", "median")
+  unknown <- setdiff(names(old), known)
+  if (is.null(names(old)) || any(names(old) == "") || length(unknown)) {
+    stop("Unknown argument(s): ", paste(c(unknown, if (any(names(old) == "")) "<unnamed>"), collapse = ", "),
+         call. = FALSE)
+  }
+  a <- list(); notes <- character(0)
+  note <- function(from, to) notes <<- c(notes, paste0("`", from, "` -> ", to))
+  if (!is.null(old$filePath)) { a$file <- old$filePath; note("filePath", "`file`") }
+  if (!is.null(old$grade))    { a$grades <- old$grade; note("grade", "`grades`") }
+  if (!is.null(old$loc))      { a$location <- old$loc; note("loc", "`location`") }
+  if (!is.null(old$WESS)) {
+    a$method <- if (isTRUE(old$WESS)) "weight" else "count"
+    note("WESS", paste0('`method = "', a$method, '"`'))
+  }
+  if (!is.null(old$gamest))   { a$smooth <- old$gamest; note("gamest", "`smooth`") }
+  if (!is.null(old$domain)) {
+    a$by_domain <- any(.ess_norm(old$domain) == "DOMAIN")
+    note("domain", paste0("`by_domain = ", a$by_domain, "`"))
+  }
+  if (!is.null(old$select_domain)) { a$domains <- old$select_domain; note("select_domain", "`domains`") }
+  if (!is.null(old$targets)) {
+    if (!identical(old$targets, "ALD")) a$columns <- list(ratings = list(level = old$targets))
+    note("targets", "`ess_data(columns = list(ratings = list(level = ...)))`")
+  }
+  if (!is.null(old$median)) note("median", "not needed (all summaries are reported)")
+  warning("emstans(): former argument names used; they still work but will be removed:\n  ",
+          paste(notes, collapse = "\n  "), call. = FALSE)
+  a
 }
 
 # Run every analysis step and assemble the ESS object.
 ess_compute <- function(data, units, settings, manual = NULL) {
-  est <- ess_estimate(data, units, settings$method, settings$gamest)
+  est <- ess_estimate(data, units, settings$method, settings$smooth)
   if (!is.null(manual)) est <- apply_manual_cuts(est, units, manual)
   structure(list(
     data        = data,
@@ -131,7 +186,7 @@ apply_manual_cuts <- function(est, units, manual) {
     m$weight <- vapply(seq_along(ks), function(j) prof[[paste0("L", ks[j], "_W")]][rows[j]], numeric(1))
     est$modal[sel, ] <- m
     mi <- est$modal_items$unit == uid
-    est$modal_items$operational[mi] <- operational_levels(sum(mi), rows)
+    est$modal_items$operational[mi] <- operational_levels(u$location, cs)
   }
   est
 }

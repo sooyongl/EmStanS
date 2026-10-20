@@ -13,7 +13,8 @@ NULL
 
 # Build the analysis units --------------------------------------------------
 
-ess_units <- function(data, loc, domain = "GCA", select_domain = NULL, grades = NULL) {
+ess_units <- function(data, location, by_domain = FALSE, domains = NULL, grades = NULL) {
+  loc <- location
   items <- data$items
   if (!loc %in% names(items)) {
     num <- names(items)[vapply(items, is.numeric, logical(1))]
@@ -36,12 +37,9 @@ ess_units <- function(data, loc, domain = "GCA", select_domain = NULL, grades = 
   use <- use[use %in% data$ratings$grade]
   if (!length(use)) stop("No grades selected.", call. = FALSE)
 
-  domain <- if (is.null(domain)) "GCA" else domain
-  want_all <- any(.ess_norm(domain) %in% c("GCA", "GRADE", "ALL"))
-  want_dom <- any(.ess_norm(domain) == "DOMAIN")
+  want_dom <- isTRUE(by_domain)
   if (want_dom && all(is.na(items$domain))) {
-    stop("`domain` asks for domain subsets, but the item data has no Domain column.",
-         call. = FALSE)
+    stop("`by_domain = TRUE`, but the item data has no Domain column.", call. = FALSE)
   }
 
   units <- list()
@@ -52,11 +50,10 @@ ess_units <- function(data, loc, domain = "GCA", select_domain = NULL, grades = 
       stop("Location column `", loc, "` is missing for item(s): ", .ess_show(miss), ".",
            call. = FALSE)
     }
-    subsets <- character(0)
-    if (want_all) subsets <- "All"
+    subsets <- "All"
     if (want_dom) {
       doms <- unique(stats::na.omit(gi$domain))
-      if (!is.null(select_domain)) doms <- doms[doms %in% select_domain]
+      if (!is.null(domains)) doms <- doms[doms %in% domains]
       subsets <- c(subsets, sort(doms))
     }
     rounds <- unique(data$ratings$round[data$ratings$grade == g])
@@ -109,12 +106,13 @@ unit_ratings <- function(data, unit) {
 # Inconsistency profile for every cut level: one row per candidate cut (each
 # item location, in item order), columns L2_C, L3_C, ..., L2_W, L3_W, ...
 # Weights are divided by SD and stripped of floating-point noise.
-ess_profile <- function(location, level, n_levels, sd = 1) {
+ess_profile <- function(location, level, n_levels, sd = 1, candidates = location) {
   d <- data.frame(location = location, ALD = level)
   cuts <- seq.int(2, n_levels)
-  prof <- lapply(cuts, function(k) essCW(d, cut_level = k)$incon_default)
-  counts  <- vapply(prof, function(p) as.numeric(p$counts),  numeric(length(location)))
-  weights <- vapply(prof, function(p) p$weights / sd, numeric(length(location)))
+  m <- length(candidates)
+  prof <- lapply(cuts, function(k) essCW(d, cut_level = k, candidates = candidates)$incon_default)
+  counts  <- vapply(prof, function(p) as.numeric(p$counts),  numeric(m))
+  weights <- vapply(prof, function(p) p$weights / sd, numeric(m))
   counts  <- matrix(counts,  ncol = length(cuts), dimnames = list(NULL, paste0("L", cuts, "_C")))
   weights <- matrix(weights, ncol = length(cuts), dimnames = list(NULL, paste0("L", cuts, "_W")))
   exact_profile(data.frame(counts, weights, check.names = FALSE))
@@ -135,11 +133,12 @@ select_cut_rows <- function(profile, method = c("weight", "count")) {
   }, integer(1))
 }
 
-# Operational level of each item given the cut rows: items from a cut row
-# onward are in the higher level (by position, as in the original code).
-operational_levels <- function(n_items, cut_rows) {
-  cr <- sort(unique(cut_rows))
-  1L + vapply(seq_len(n_items), function(i) sum(cr <= i), integer(1))
+# Empirical (operational) level of each item: 1 + the number of cut scores at
+# or below its location, the same rule the estimation uses (an item at or
+# above a level's cut belongs to that level). When two cuts coincide, the
+# level between them is empty and items at the cut go to the higher level.
+operational_levels <- function(location, cut_scores) {
+  1L + findInterval(location, sort(cut_scores))
 }
 
 # GAM-smoothed minimum of one profile column: the smoothed curve is evaluated
@@ -165,12 +164,12 @@ safe_cor <- function(x, y) {
 # Fit ESS to one level vector. Returns the profile, the cut for each level,
 # each item's operational level, and the alignment-location correlation.
 ess_fit <- function(location, level, n_levels, sd = 1,
-                    method = c("weight", "count"), gamest = FALSE) {
+                    method = c("weight", "count"), smooth = FALSE) {
   method <- match.arg(method)
   profile <- ess_profile(location, level, n_levels, sd)
   ks <- seq.int(2, n_levels)
 
-  if (!gamest) {
+  if (!smooth) {
     rows <- select_cut_rows(profile, method)
     cut_score <- location[rows]
     weight <- vapply(seq_along(ks), function(j) profile[[paste0("L", ks[j], "_W")]][rows[j]], numeric(1))
@@ -191,7 +190,7 @@ ess_fit <- function(location, level, n_levels, sd = 1,
     profile = profile,
     cuts = data.frame(level = ks, page = unname(rows), cut_score = unname(cut_score),
                       count = count, weight = weight),
-    operational = operational_levels(length(location), rows),
+    operational = operational_levels(location, cut_score),
     correlation = safe_cor(level, location),
     gam = gam
   )
@@ -201,13 +200,13 @@ ess_fit <- function(location, level, n_levels, sd = 1,
 
 # Fit every panelist and every modal group (each table, and all tables) in
 # every unit. Returns a list of tidy data frames.
-ess_estimate <- function(data, units, method = "weight", gamest = FALSE) {
+ess_estimate <- function(data, units, method = "weight", smooth = FALSE) {
   panel_rows <- list(); modal_rows <- list(); modal_items <- list(); fits <- list()
 
   for (u in units) {
     ur <- unit_ratings(data, u)
     p_fits <- lapply(seq_along(ur$panelist), function(j)
-      ess_fit(u$location, ur$levels[, j], u$n_levels, u$sd, method, gamest))
+      ess_fit(u$location, ur$levels[, j], u$n_levels, u$sd, method, smooth))
     names(p_fits) <- ur$panelist
     cors <- vapply(p_fits, `[[`, numeric(1), "correlation")
 
@@ -222,7 +221,7 @@ ess_estimate <- function(data, units, method = "weight", gamest = FALSE) {
     for (gname in names(groups)) {
       sel <- if (gname == "All") seq_along(ur$panelist) else which(ur$table == gname)
       modal <- as.integer(row_modes(ur$levels[, sel, drop = FALSE], cors[sel]))
-      fit <- ess_fit(u$location, modal, u$n_levels, u$sd, method, gamest)
+      fit <- ess_fit(u$location, modal, u$n_levels, u$sd, method, smooth)
       modal_rows[[length(modal_rows) + 1]] <- data.frame(
         unit = u$id, grade = u$grade, subset = u$subset, round = u$round,
         table = gname, correlation = fit$correlation, fit$cuts, stringsAsFactors = FALSE)

@@ -28,12 +28,10 @@ Imports:
     dplyr,
     DT,
     ggplot2,
-    glue,
     htmltools,
     mgcv,
     plotly,
     psych,
-    purrr,
     readxl,
     stats,
     stringi,
@@ -58,10 +56,10 @@ Collate:
     'ess_estimate.R'
     'ess_diagnose.R'
     'ess_main.R'
+    'ess_bootstrap.R'
     'ess_methods.R'
     'ess_plots.R'
     'ess_profile.R'
     'ess_report.R'
     'validate.R'
-    'z_bootstrapping.r'
     'z_simulation_function.r'

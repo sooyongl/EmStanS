@@ -58,7 +58,10 @@ test_that("exact_profile restores ties broken by floating-point noise", {
   expect_equal(unname(EmStanS:::select_cut_rows(prof, "weight")), 2)
 })
 
-test_that("operational levels follow the cut pages", {
-  expect_equal(EmStanS:::operational_levels(6, c(3, 5)), c(1, 1, 2, 2, 3, 3))
-  expect_equal(EmStanS:::operational_levels(4, c(1, 4)), c(2, 2, 2, 3))
+test_that("empirical level: an item at or above a cut is in that level", {
+  loc <- c(1, 2, 3, 4, 5, 6)
+  expect_equal(EmStanS:::operational_levels(loc, c(3, 5)), c(1, 1, 2, 2, 3, 3))
+  # Two cuts on the same item: the level between them is empty, and the item
+  # at the cut belongs to the higher level (the old position rule said 2).
+  expect_equal(EmStanS:::operational_levels(loc, c(3, 3)), c(1, 1, 3, 3, 3, 3))
 })

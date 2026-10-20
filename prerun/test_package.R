@@ -23,7 +23,7 @@ dir.create(out_dir, showWarnings = FALSE)
 # 1. Main function and print() --------------------------------------------------
 
 t0 <- Sys.time()
-res <- emstans(filePath = xlsx, loc = "RP67", WESS = TRUE)
+res <- emstans(xlsx, location = "RP67", method = "weight")
 Sys.time() - t0                       # about a second
 
 res                                   # print(): settings and modal cut scores
@@ -36,15 +36,14 @@ check(all(vapply(extract(res, "cutscore"), function(x) identical(names(x), c("M"
       "cuts are labelled M and L")
 
 ## Count method and GAM smoothing
-res_c <- emstans(filePath = xlsx, loc = "RP67", WESS = FALSE)
+res_c <- emstans(xlsx, location = "RP67", method = "count")
 res_c
-res_g <- emstans(filePath = xlsx, loc = "RP67", gamest = TRUE)
+res_g <- emstans(xlsx, location = "RP67", smooth = TRUE)
 res_g
 
 ## Subsets of grades and domain units
-emstans(filePath = xlsx, loc = "RP67", grade = c("R1", "R2"))
-emstans(filePath = xlsx, loc = "RP67", grade = 1:2,
-        domain = c("GCA", "Domain"), select_domain = c("VOC", "COM"))
+emstans(xlsx, location = "RP67", grades = c("R1", "R2"))
+emstans(xlsx, location = "RP67", grades = 1:2, by_domain = TRUE, domains = c("VOC", "COM"))
 
 # 2. extract() -------------------------------------------------------------------
 
@@ -97,12 +96,17 @@ try(update(res, `R1-All` = 0.5))               # wrong number of cuts -> error
 
 # 6. bootstrapping() -------------------------------------------------------------------
 
-b <- bootstrapping(res, "R3-All", boot_num = 30, seed = 1)
+b <- bootstrapping(res, "R3-All", n = 200, seed = 1)
 b                                              # print.bootESS(): summary per cut
 summary(b)
 head(extract(b, "draws"))
 extract(b, "plot")
 if (interactive()) print(report(b))
+check(all(b$draws$cut_score %in% res$modal_items$location), "default bootstrap cuts are item locations")
+
+## The earlier jittered-grid bootstrap, as an option
+b_j <- bootstrapping(res, "R3-All", n = 30, seed = 1, grid = "jittered")
+b_j
 
 # 7. Input other than the Excel workbook --------------------------------------------------
 
@@ -126,7 +130,7 @@ d_csv <- ess_data(
   columns = list(ratings = list(panelist = "Rater", item_id = 3, level = "Judgment"),
                  items   = list(item_id = "ItemCode")),
   quiet = FALSE)
-res_csv <- emstans(data = d_csv, loc = "RP67")
+res_csv <- emstans(data = d_csv, location = "RP67")
 check(isTRUE(all.equal(extract(res_csv, "cutscore"), extract(res, "cutscore"))),
       "CSV input gives the same cut scores as the workbook")
 
@@ -136,7 +140,7 @@ r2$label <- c(E = "Emerging", M = "Meeting", L = "Leading")[r2$label]
 d_lab <- ess_data(r2[c("grade", "round", "table", "panelist", "item_id", "label")], d$items,
                   levels = c("Emerging", "Meeting", "Leading"),
                   columns = list(ratings = list(level = "label")))
-res_lab <- emstans(data = d_lab, loc = "RP67")
+res_lab <- emstans(data = d_lab, location = "RP67")
 res_lab
 check(identical(names(extract(res_lab, "cutscore")[[1]]), c("Meeting", "Leading")),
       "custom labels in the output")
@@ -148,20 +152,27 @@ r_round2$label[i] <- sample(c("E", "M", "L"), 200, TRUE)
 d_rounds <- ess_data(rbind(d$ratings, r_round2)[c("grade", "round", "table", "panelist", "item_id", "label")],
                      d$items, levels = c("E", "M", "L"),
                      columns = list(ratings = list(level = "label")))
-res_rounds <- emstans(data = d_rounds, loc = "RP67")
+res_rounds <- emstans(data = d_rounds, location = "RP67")
 res_rounds
 check(length(extract(res_rounds, "cutscore")) == 14, "7 grades x 2 rounds")
 
 ## 7d. Simulated data with several panelists and tables
 fake <- genFakeDataSet(ngca = 2, cor_val = 0.6, n = 30, nlevel = 3, ntable = 2,
                        npanelist = 3, sdinp = 1, ecinp = 0, 100, 300)
-res_fake <- emstans(data = fake, loc = "Loc_RP50")
+res_fake <- emstans(data = fake, location = "Loc_RP50")
 res_fake
 extract(res_fake, "individual")$median
 
-# 8. Input checks ------------------------------------------------------------------------
+# 8. Former argument names still work (with one warning listing the new names)
 
-try(emstans(filePath = xlsx, loc = "RP99"))                       # unknown location column
+res_old <- emstans(filePath = xlsx, loc = "RP67", WESS = FALSE)
+check(isTRUE(all.equal(extract(res_old, "cutscore"), extract(res_c, "cutscore"))),
+      "former argument names give the same result")
+try(emstans(xlsx, locaton = "RP67"))                              # misspelled -> error
+
+# 9. Input checks ------------------------------------------------------------------------
+
+try(emstans(xlsx, location = "RP99"))                       # unknown location column
 raw <- lapply(readxl::excel_sheets(xlsx), function(s) readxl::read_excel(xlsx, sheet = s))
 validateData(raw)                                                 # compatibility wrapper
 raw[[3]] <- raw[[3]][-1, ]

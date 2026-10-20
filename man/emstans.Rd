@@ -5,53 +5,55 @@
 \title{Run Embedded Standard Setting Analysis}
 \usage{
 emstans(
-  filePath = NULL,
+  file = NULL,
   data = NULL,
-  grade = NULL,
-  domain = "GCA",
-  targets = "ALD",
-  loc = "RP67",
-  median = "modal",
-  select_domain = NULL,
-  WESS = TRUE,
-  gamest = FALSE,
+  ...,
+  grades = NULL,
+  location = "RP67",
+  method = c("weight", "count"),
+  smooth = FALSE,
+  by_domain = FALSE,
+  domains = NULL,
   font_size = 14,
   digits = 3
 )
 }
 \arguments{
-\item{filePath}{Path to an EmStanS Excel workbook (sheets Setup,
-Panelists, Ratings, ItemMetaData, ExamineeMetaData). Either `filePath`
-or `data` must be given.}
+\item{file}{Path to an EmStanS Excel workbook (sheets Setup, Panelists,
+Ratings, ItemMetaData, ExamineeMetaData). Either `file` or `data` must be
+given.}
 
 \item{data}{An object from [ess_data()] or [ess_read_excel()], or a list
 of data frames in the workbook's sheet order (setup, panelists, ratings,
 item data, examinee data).}
 
-\item{grade}{Grades to analyse: `NULL` for all, a numeric vector of
+\item{...}{Former argument names, still accepted with a warning. All
+arguments after `data` must be named in full. Former names:
+`filePath` (now `file`), `grade` (`grades`), `loc` (`location`), `WESS`
+(`method`), `gamest` (`smooth`), `domain` and `select_domain`
+(`by_domain`, `domains`), `targets` (use the `columns` argument of
+[ess_data()]) and `median` (no longer needed: modal, median and average
+cuts are always reported).}
+
+\item{grades}{Grades to analyse: `NULL` for all, a numeric vector of
 positions, or a character vector of grade names. Default `NULL`.}
 
-\item{domain}{Item subsets to analyse: `"GCA"` for all items of each grade,
-`"Domain"` for each content domain separately, or both. Default `"GCA"`.}
-
-\item{targets}{Name of the ratings column holding the aligned level.
-Default `"ALD"`.}
-
-\item{loc}{Name of the item location column, such as `"RP67"` or
+\item{location}{Name of the item location column, such as `"RP67"` or
 `"RP50"`. Default `"RP67"`.}
 
-\item{median}{Reserved; cut scores are always reported as modal, median
-and average.}
+\item{method}{`"weight"` for ESS-Weight (minimise the summed distance of
+inconsistent items) or `"count"` for ESS-Count (minimise their number).
+Default `"weight"`.}
 
-\item{select_domain}{With `domain = "Domain"`, the domains to analyse.
-`NULL` analyses every domain.}
+\item{smooth}{If `TRUE`, cut scores are the minima of a GAM-smoothed
+inconsistency profile instead of the exact minima. Default `FALSE`.}
 
-\item{WESS}{`TRUE` for ESS-Weight (minimise the summed distance of
-inconsistent items), `FALSE` for ESS-Count (minimise their number).
-Default `TRUE`.}
+\item{by_domain}{If `TRUE`, each content domain (the item data's Domain
+column) is also analysed separately, in addition to all items of each
+grade. Default `FALSE`.}
 
-\item{gamest}{If `TRUE`, cut scores are the minima of a GAM-smoothed
-inconsistency profile. Default `FALSE`.}
+\item{domains}{With `by_domain = TRUE`, the domains to analyse; `NULL` for
+all of them.}
 
 \item{font_size}{Font size for plots. Default `14`.}
 
@@ -59,8 +61,8 @@ inconsistency profile. Default `FALSE`.}
 }
 \value{
 An object of class `"ESS"`. Use [extract()] to get its tables,
-  [report()] for an HTML report, [update()] to set cut scores manually and
-  [bootstrapping()] for bootstrap cut scores.
+  [report()] for an HTML report, [plot()] for plots, [update()] to set cut
+  scores manually and [bootstrapping()] for bootstrap cut scores.
 }
 \description{
 `emstans()` estimates cut scores with Embedded Standard Setting (ESS) from
@@ -73,14 +75,17 @@ aligned and empirical levels, an item review, and impact data.
 }
 \examples{
 \dontrun{
-res <- emstans(filePath = "study.xlsx", loc = "RP67")
+res <- emstans("study.xlsx", location = "RP67")
 res
 extract(res, "cutscore")
 report(res)
 
+# ESS-Count, and each content domain separately
+emstans("study.xlsx", method = "count", by_domain = TRUE)
+
 # CSV input with custom column names and level labels
 d <- ess_data(ratings = "ratings.csv", items = "items.csv",
               levels = c("Basic", "Intermediate", "Advanced"))
-res <- emstans(data = d, loc = "RP50")
+res <- emstans(data = d, location = "RP50")
 }
 }

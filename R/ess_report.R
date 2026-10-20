@@ -62,7 +62,7 @@ report.bootESS <- function(x, ...) {
 report_settings_line <- function(x) {
   s <- x$settings
   paste0("ESS-", if (s$method == "weight") "Weight" else "Count",
-         if (s$gamest) " (GAM-smoothed)" else "", "; location: ", s$loc, "; ",
+         if (s$smooth) " (GAM-smoothed)" else "", "; location: ", s$location, "; ",
          length(x$units), " unit(s)",
          if (length(x$manual)) paste0("; manual cut scores for ", paste(names(x$manual), collapse = ", ")) else "")
 }

@@ -44,7 +44,7 @@ plot_profile <- function(x, unit) {
                             label = paste0(.data$cut_level, ": ", round(.data$cut_score, 3),
                                            " (p. ", .data$page, ")")),
               vjust = -1, fontface = "bold", size = fs * 5 / 14 * .8, show.legend = FALSE) +
-    labs(x = x$settings$loc,
+    labs(x = x$settings$location,
          y = if (x$settings$method == "weight") "Weighted inconsistency" else "Inconsistent items",
          colour = "Cut for", title = unit) +
     theme_bw(base_size = fs)
@@ -65,7 +65,7 @@ plot_impact <- function(x, subset = "All") {
   p_cut <- ggplot(cuts, aes(x = .data$grade, y = .data$cut_score, colour = .data$level,
                             group = .data$level)) +
     geom_line(linewidth = 1) + geom_point(size = 3, shape = 21, fill = "white", stroke = 1.5) +
-    labs(x = "Grade", y = x$settings$loc, colour = "Cut for", title = "Cut scores") + base
+    labs(x = "Grade", y = x$settings$location, colour = "Cut for", title = "Cut scores") + base
   out <- list(cut_scores = p_cut)
 
   if (any(!is.na(im$pct_in))) {
@@ -90,7 +90,7 @@ plot_bootstrap <- function(b) {
     geom_histogram(bins = 30, alpha = .7, position = "identity") +
     geom_vline(data = est, aes(xintercept = .data$estimate, colour = .data$cut_level), linewidth = 1) +
     geom_vline(data = est, aes(xintercept = .data$mean, colour = .data$cut_level), linetype = "dashed") +
-    labs(x = b$ess$settings$loc, y = "Bootstrap samples", fill = "Cut for", colour = "Cut for",
+    labs(x = b$ess$settings$location, y = "Bootstrap samples", fill = "Cut for", colour = "Cut for",
          title = paste("Bootstrap cut scores:", b$unit),
          subtitle = "Solid: estimate; dashed: bootstrap mean") +
     theme_bw(base_size = b$ess$settings$font_size)

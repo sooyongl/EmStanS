@@ -1,6 +1,6 @@
 test_that("emstans() runs end to end with Weight and Count", {
-  for (w in c(TRUE, FALSE)) {
-    res <- run_fake(WESS = w)
+  for (w in c("weight", "count")) {
+    res <- run_fake(method = w)
     expect_s3_class(res, "ESS")
     cuts <- extract(res, "cutscore")
     expect_named(cuts, c("M1-All", "M2-All"))
@@ -10,19 +10,19 @@ test_that("emstans() runs end to end with Weight and Count", {
 })
 
 test_that("cut scores are stable (regression snapshot)", {
-  res <- run_fake(WESS = TRUE)
+  res <- run_fake(method = "weight")
   expect_snapshot_value(lapply(extract(res, "cutscore"), unname), style = "json2")
-  res_c <- run_fake(WESS = FALSE)
+  res_c <- run_fake(method = "count")
   expect_snapshot_value(lapply(extract(res_c, "cutscore"), unname), style = "json2")
 })
 
 test_that("every grade appears in the item review", {
-  res <- run_fake(WESS = FALSE)
+  res <- run_fake(method = "count")
   expect_setequal(unique(extract(res, "review")$unit), names(extract(res, "cutscore")))
 })
 
 test_that("update() assigns manual cuts by name, whatever the order", {
-  res <- run_fake(WESS = TRUE)
+  res <- run_fake(method = "weight")
   upd <- suppressWarnings(suppressMessages(
     update(res, `M2-All` = c(250, 280), `M1-All` = c(150, 220))
   ))
@@ -32,7 +32,7 @@ test_that("update() assigns manual cuts by name, whatever the order", {
 })
 
 test_that("update() rejects unknown names and wrong lengths", {
-  res <- run_fake(WESS = TRUE)
+  res <- run_fake(method = "weight")
   expect_error(update(res, `M9-All` = c(1, 2)), "Unknown unit")
   expect_error(update(res, `M1-All` = 150), "needs 2 numeric")
 })

@@ -7,7 +7,7 @@ print.ESS <- function(x, ...) {
   cat("Embedded Standard Setting\n")
   cat(sprintf("  method: ESS-%s%s | location: %s | %d unit(s)%s\n",
               if (s$method == "weight") "Weight" else "Count",
-              if (s$gamest) " (GAM-smoothed)" else "", s$loc, length(x$units),
+              if (s$smooth) " (GAM-smoothed)" else "", s$location, length(x$units),
               if (length(x$manual)) paste0(" | manual cuts: ", paste(names(x$manual), collapse = ", ")) else ""))
   cat("\nModal cut scores (all tables):\n")
   cuts <- modal_cut_scores(x)
@@ -116,69 +116,4 @@ update.ESS <- function(object, ...) {
   manual <- object$manual
   manual[names(updates)] <- lapply(updates, unname)
   ess_compute(object$data, object$units, object$settings, manual = manual)
-}
-
-#' @rdname bootstrapping.ESS
-#' @export
-bootstrapping <- function(output, ...) {
-  UseMethod("bootstrapping")
-}
-
-#' Bootstrap the modal cut scores of one unit
-#'
-#' Resamples the unit's items (with their modal aligned levels) and
-#' re-estimates the cut scores in each sample.
-#'
-#' @param output An object of class `"ESS"`.
-#' @param gca_name The unit to bootstrap, as named in
-#'   `extract(output, "cutscore")`.
-#' @param boot_num Number of bootstrap samples. Default `10`.
-#' @param seed Optional random seed for reproducible draws.
-#' @param ... Not used.
-#' @return An object of class `"bootESS"`.
-#' @export
-bootstrapping.ESS <- function(output, gca_name, boot_num = 10, seed = NULL, ...) {
-  if (length(gca_name) != 1 || !gca_name %in% names(output$units)) {
-    stop("`gca_name` must be one of: ", paste0("`", names(output$units), "`", collapse = ", "),
-         ".", call. = FALSE)
-  }
-  if (!is.null(seed)) set.seed(seed)
-  u <- output$units[[gca_name]]
-  mi <- output$modal_items[output$modal_items$unit == gca_name, ]
-  draws <- boot_ESS(new_data = data.frame(location = mi$location, ALD = mi$aligned),
-                    WESS = output$settings$method == "weight", n_rep = boot_num,
-                    b_prop = 1, replace = TRUE, empirical = FALSE, n_level = u$n_levels)
-  draws$cut_level <- level_label(output, u$grade, as.integer(sub("^L([0-9]+)_.*$", "\\1", draws$lv_nm)))
-  draws <- data.frame(rep = as.integer(draws$boot_rep), cut_level = draws$cut_level,
-                      cut_score = draws$x, inconsistency = draws$y)
-  stat <- function(v) c(n = length(v), mean = mean(v), sd = stats::sd(v), median = stats::median(v),
-                        min = min(v), max = max(v), q2.5 = unname(stats::quantile(v, .025)),
-                        q97.5 = unname(stats::quantile(v, .975)))
-  smry <- do.call(rbind, lapply(split(draws$cut_score, draws$cut_level, drop = TRUE), stat))
-  smry <- data.frame(cut_level = rownames(smry), smry, row.names = NULL)
-  smry$estimate <- modal_cut_scores(output)[[gca_name]][smry$cut_level]
-
-  structure(list(ess = output, unit = gca_name, draws = draws, summary = smry),
-            class = "bootESS")
-}
-
-#' @export
-print.bootESS <- function(x, ...) {
-  cat("Bootstrap of modal cut scores for", x$unit, "\n")
-  print(x$summary, digits = 4, row.names = FALSE)
-  invisible(x)
-}
-
-#' @export
-summary.bootESS <- function(object, ...) {
-  print(object)
-  invisible(object$summary)
-}
-
-#' @export
-extract.bootESS <- function(x, what = "all", ...) {
-  what <- match.arg(what, c("all", "draws", "summary", "plot"))
-  switch(what,
-         draws = x$draws, summary = x$summary, plot = plot_bootstrap(x),
-         all = list(draws = x$draws, summary = x$summary, plot = plot_bootstrap(x)))
 }

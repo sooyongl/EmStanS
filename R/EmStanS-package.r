@@ -10,11 +10,8 @@
 #' cut score estimation algorithm (referred to as ESS-Count and ESS-Weight).
 #'
 #' @import ggplot2
-#' @importFrom dplyr %>% select mutate mutate_if bind_rows bind_cols arrange
-#' @importFrom dplyr sample_frac matches all_of everything row_number
-#' @importFrom purrr map map2 set_names
-#' @importFrom glue glue
-#' @importFrom stringr str_extract str_remove
+#' @importFrom dplyr %>% mutate bind_rows bind_cols row_number
+#' @importFrom stringr str_remove
 #' @importFrom tibble tibble as_tibble
 #' @importFrom data.table data.table
 #' @importFrom stats runif rnorm rpois sd var formula

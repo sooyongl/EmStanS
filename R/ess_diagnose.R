@@ -43,18 +43,12 @@ ess_agreement <- function(est, units) {
   for (uid in names(units)) {
     u <- units[[uid]]; K <- u$n_levels
     mi <- est$modal_items[est$modal_items$unit == uid, , drop = FALSE]
-    cut_rows <- est$modal$page[est$modal$unit == uid & est$modal$table == "All"]
     cuts <- est$modal$cut_score[est$modal$unit == uid & est$modal$table == "All"]
 
-    # Items on the wrong side of some cut, by position (as crosstab_ready()).
-    row <- seq_len(nrow(mi)); flagged <- rep(FALSE, nrow(mi))
-    for (k in seq.int(2, K)) {
-      cr <- cut_rows[k - 1]
-      flagged <- flagged | (row < cr & mi$aligned >= k) | (row >= cr & mi$aligned < k)
-    }
+    # Distance of each inconsistent item from the cut bounding its aligned level.
+    off <- mi$aligned != mi$operational
     dist <- rep(NA_real_, nrow(mi))
-    dist[flagged] <- abs(item_distance(mi$aligned, mi$operational, mi$location, cuts)[flagged])
-    dist[flagged & mi$aligned == mi$operational] <- NA
+    dist[off] <- abs(item_distance(mi$aligned, mi$operational, mi$location, cuts)[off])
 
     for (type in c("exact", "ec")) {
       aligned <- mi$aligned

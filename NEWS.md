@@ -1,5 +1,41 @@
 # EmStanS 0.1.0.9000
 
+## Stage 3: method decisions and argument names
+
+### Changes to results
+
+* An item's empirical (operational) level is now 1 + the number of cut
+  scores at or below its location, the rule the estimation itself uses.
+  Previously it was assigned by the item's position relative to the cut
+  items, and two cuts on the same item were merged into one, so the items at
+  and above them were placed one level too low. Cut scores are unchanged;
+  agreement, crosstabs and item review change only when two cuts fall on the
+  same item: in the example studies, 58 items in 19 grade results (mostly
+  CAAELP and ESS-Count).
+* `bootstrapping()` now resamples items and takes the exact ESS minimum in
+  every sample, the same estimator as `emstans()`. The earlier bootstrap
+  (a jittered grid of candidate cuts with a GAM-smoothed minimum) remains
+  available with `grid = "jittered"`; it now uses one grid per sample for
+  all cut levels (each level previously drew its own grid but was reported
+  on level 2's grid points).
+* The item-review distance is unchanged ("location - (upper cut - 1)").
+
+### New argument names
+
+* `emstans(file, data, ..., grades, location, method, smooth, by_domain,
+  domains, font_size, digits)`. Former names still work, with one warning
+  listing the replacements: `filePath` -> `file`, `grade` -> `grades`,
+  `loc` -> `location`, `WESS = TRUE/FALSE` -> `method = "weight"/"count"`,
+  `gamest` -> `smooth`, `domain`/`select_domain` -> `by_domain`/`domains`,
+  `targets` -> `ess_data(columns = ...)`, and `median` (not needed).
+  Arguments after `data` must be named in full, so a former name is never
+  partially matched to a new one (`domain` would otherwise have been taken
+  as `domains`). Misspelled arguments are an error.
+* `by_domain = TRUE` always includes the all-items unit of each grade.
+* `bootstrapping(x, unit, n = 100, seed = NULL, grid = c("items", "jittered"))`;
+  `gca_name` and `boot_num` still work, with a warning.
+* Dependencies dropped: glue, purrr.
+
 ## Stage 2: new structure
 
 ### New input options

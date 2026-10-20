@@ -43,7 +43,6 @@ library(EmStanS)
 ```
 
 ```{r eval = T}
-# data <- read.csv(filePath)
 fake_data <- genFakeDataSet(ngca = 3, 
                cor_val = 0.2,
                n = 30,
@@ -63,13 +62,10 @@ fake_data
 
 ```{r eval = T}
 res <- emstans(data = fake_data,
-               grade = c(1,2),
-               targets = "ALD",
-               WESS = T,
-               gamest = F,
-               median = "modal",
-               loc = "Loc_RP50",
-               domain = "GCA")
+               grades = c(1, 2),
+               location = "Loc_RP50",
+               method = "weight",
+               smooth = FALSE)
 
 ```
 
@@ -80,7 +76,7 @@ An EmStanS Excel workbook (sheets Setup, Panelists, Ratings, ItemMetaData,
 ExamineeMetaData) can be passed directly:
 
 ```{r}
-res <- emstans(filePath = "my_study.xlsx", loc = "RP67")
+res <- emstans("my_study.xlsx", location = "RP67")
 ```
 
 Data in other layouts, such as CSV files, go through `ess_data()`. Only
@@ -97,7 +93,7 @@ d <- ess_data(
   columns = list(ratings = list(panelist = "Rater", level = 8))
 )
 d                      # overview of what was read
-res <- emstans(data = d, loc = "RP50")
+res <- emstans(data = d, location = "RP50")
 ```
 
 Level labels may also differ by grade:

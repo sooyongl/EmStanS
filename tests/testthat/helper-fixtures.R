@@ -27,5 +27,5 @@ fake_study <- local({
 })
 
 run_fake <- function(data = fake_study(), ...) {
-  suppressWarnings(suppressMessages(emstans(data = data, loc = "Loc_RP50", ...)))
+  suppressWarnings(suppressMessages(emstans(data = data, location = "Loc_RP50", ...)))
 }

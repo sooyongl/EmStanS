@@ -55,7 +55,7 @@ str(u[c("grade", "subset", "round", "n_levels", "sd", "ec")])
 head(data.frame(item_id = u$item_id, location = u$location))   # items in location order
 
 ## Domain subsets as extra units
-names(ess_units(d, loc, domain = c("GCA", "Domain"), select_domain = "VOC", grades = "R1"))
+names(ess_units(d, loc, by_domain = TRUE, domains = "VOC", grades = "R1"))
 
 # 3. One panelist's fit, step by step ---------------------------------------------
 
@@ -76,15 +76,16 @@ rows_w <- select_cut_rows(prof, "weight"); rows_w
 rows_c <- select_cut_rows(prof, "count");  rows_c
 u$location[rows_w]                         # the cut scores
 
-## 3d. Empirical (operational) level of every item given the cut rows
-table(operational_levels(length(u$location), rows_w))
+## 3d. Empirical (operational) level of every item: 1 + number of cuts at or below it
+table(operational_levels(u$location, u$location[rows_w]))
+operational_levels(1:6, c(3, 3))           # two cuts on one item: level 2 is empty
 
 ## 3e. Everything above in one call
 fit <- ess_fit(u$location, lev, u$n_levels, u$sd, method = "weight")
 fit$cuts                                   # level, page, cut_score, count, weight
 fit$correlation
 
-## 3f. GAM-smoothed minimum (used when gamest = TRUE)
+## 3f. GAM-smoothed minimum (used when smooth = TRUE)
 g <- gam_minimum(u$location, prof$L2_W)
 g[c("score", "value", "row")]
 
@@ -126,8 +127,8 @@ im[im$unit == "R1-All", ]                  # pages per level; % columns NA (no e
 
 # 6. The ESS object ---------------------------------------------------------------------
 
-settings <- list(loc = loc, method = "weight", gamest = FALSE, domain = "GCA",
-                 select_domain = NULL, font_size = 14, digits = 3, source = xlsx)
+settings <- list(location = loc, method = "weight", smooth = FALSE, by_domain = FALSE,
+                 domains = NULL, font_size = 14, digits = 3, source = xlsx)
 res <- ess_compute(d, units, settings)
 class(res); names(res)
 res                                        # same object emstans() returns
@@ -141,3 +142,14 @@ head(labelled_profile(res, "R1-All"))
 ## Manual cuts go through the same computation
 res_m <- ess_compute(d, units, settings, manual = list(`R1-All` = c(-0.9, 0.4)))
 modal_cut_scores(res_m)[["R1-All"]]
+
+# 7. Bootstrap internals -------------------------------------------------------------------
+
+mi <- res$modal_items[res$modal_items$unit == "R3-All", ]
+set.seed(1)
+boot_sample_cuts(mi$location, mi$aligned, n_levels = 3, sd = 1, method = "weight", grid = "items")
+boot_sample_cuts(mi$location, mi$aligned, n_levels = 3, sd = 1, method = "weight", grid = "jittered")
+
+# 8. Former argument names -----------------------------------------------------------------
+
+emstans_old_args(list(filePath = xlsx, loc = "RP67", WESS = FALSE, domain = "Domain"))
