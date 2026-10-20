@@ -315,11 +315,10 @@ crosstab_ready <- function(tab1_filtered, tab1_cut, tab2_tbl, information) {
 
   target_names <- tab2_tbl$ALD
 
-  lv_name <- target_names %>% unique() %>% sort()
-
-  given_n <- c(1:length(lv_name))
-  length_n <- ifelse(length(given_n) == 1, 2, length(given_n))
-  targets_n <- match(target_names, lv_name)
+  # Level number from the label ("Level3" -> 3), as in gen_tab4(); ranking
+  # only the levels present shifted levels when one was unused.
+  targets_n <- extract_num(target_names)
+  length_n <- length(tab1_cut) + 1
 
   er <- length(target_names)
   review_table <-
