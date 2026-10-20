@@ -20,10 +20,15 @@
 ### Changes to results
 
 * When a cut level had tied minima, the old `cal_minp()` mixed its
-  candidates with another level's, so the tie rule (lower weight, then
-  lower count, then earlier item) was not applied. It is now applied for
-  each level separately. In the example studies this changed one cut in
-  aasr (R1, first cut, -0.9407 to -0.9351) and one in the simulated data.
+  candidates with other levels' (a `matrix(byrow = TRUE)` on column-ordered
+  data). A level could then get another level's cut, which need not be a
+  minimum for it at all: in one study, a level-3 cut was placed where 48
+  items were inconsistent instead of at the unique minimum with 21. The tie
+  rule (lower weight, then lower count, then earlier item) is now applied to
+  each level separately. Ties are common under ESS-Count, whose counts are
+  integers: across the example studies 57 of 840 grade-level cuts changed,
+  48 under Count and 9 under Weight. The bug predates Stage 1. Running the
+  old code with only this fix gives exactly the new cut scores.
 * The EC-adjusted crosstab took level numbers from the levels present in a
   grade (the same bug fixed in the item review in Stage 1).
 * Averages are rounded once from exact values; the old code rounded to 4
