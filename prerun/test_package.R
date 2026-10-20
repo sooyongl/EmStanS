@@ -1,181 +1,170 @@
-source_files <- fs::dir_ls("R")
-for(i in 1:length(source_files)) { source(source_files[i])}
-
-library(stringr)
-library(bslib)
-# library(plotly)
-library(ggplot2)
-
-foreach <- foreach::foreach
-`%do%` <- foreach::`%do%`
-
-geom_label_repel <- ggrepel::geom_label_repel
-
-arrow <- grid::arrow
-unit <- grid::unit
-
-glue <- glue::glue
-
-# mutate <- dplyr::mutate
-# bind_cols <- dplyr::bind_cols
-# select <- dplyr::select
-# mutate_all <- dplyr::mutate_all
-# mutate_at <- dplyr::mutate_at
-# rename <- dplyr::rename
-# bind_rows <- dplyr::bind_rows
-# arrange <- dplyr::arrange
-# slice <- dplyr::slice
-# left_join <- dplyr::left_join
-# case_when <- dplyr::case_when
-# vars <- dplyr::vars
-# group_split <- dplyr::group_split
-# pull <- dplyr::pull
-# group_by <- dplyr::group_by
-# filter <- dplyr::filter
-# summarise <- dplyr::summarise
-# n <- dplyr::n
-# count <- dplyr::count
-# relocate <- dplyr::relocate
-# mutate_if <- dplyr::mutate_if
-# if_else <- dplyr::if_else
-# summarise_all <- dplyr::summarise_all
-# group_by_at <- dplyr::group_by_at
-# distinct_at <- dplyr::distinct_at
-
-library(dplyr)
-
-tibble <- tibble::tibble
-as_tibble <- tibble::as_tibble
-
-spread <- tidyr::spread
-gather <- tidyr::gather
-drop_na <- tidyr::drop_na
-crossing <- tidyr::crossing
-separate <- tidyr::separate
-
-everything <- tidyselect::everything
-matches <- tidyselect::matches
-starts_with <- tidyselect::starts_with
-ends_with <- tidyselect::ends_with
-all_of <- tidyselect::all_of
-
-data.table <- data.table::data.table
-
-datatable <- DT::datatable
-formatStyle <- DT::formatStyle
-styleEqual <- DT::styleEqual
-JS <- DT::JS
-
-pmap <- purrr::pmap
-map <- purrr::map
-map2 <- purrr::map2
-map2_dbl <- purrr::map2_dbl
-set_names <- purrr::set_names
-cross <- purrr::cross
-
-`%>%` <- magrittr::`%>%`
-
-browseURL <- utils::browseURL
-write.csv <- utils::write.csv
-read.csv <- utils::read.csv
-
-read_excel <- readxl::read_excel
-excel_sheets <- readxl::excel_sheets
-
-gam <- mgcv::gam
-predict.gam <- mgcv::predict.gam
-
-HTML <- htmltools::HTML
-tags <- htmltools::tags
-
-
-stri_replace_all_charclass <- stringi::stri_replace_all_charclass
-
-cell_spec <- kableExtra::cell_spec
-add_header_above <- kableExtra::add_header_above
-row_spec <- kableExtra::row_spec
-column_spec <- kableExtra::column_spec
-collapse_rows <- kableExtra::collapse_rows
-kable_styling <- kableExtra::kable_styling
-kable <- knitr::kable
-
-layout <- plotly::layout
-ggplotly <- plotly::ggplotly
-
-describe <- psych::describe
-# -------------------------------------------------------------------------
-
-file.show(fs::dir_ls("prerun/data/example_file")[1])
-
-
-
-res <- emstans(filePath = fs::dir_ls("prerun/data/example_file")[1],
-               grade = c(1,2),
-               targets = "ALD",
-               WESS = T,
-               gamest = F,
-               median = "modal",
-               loc = "RP67",
-               domain = "GCA",
-               select_domain = NULL,
-               font_size = 14,
-               digits = 3)
-
-res
-
-report(res, what = "summary")
-
-
-extract(res)
-
-class(res)
-summary(res)
-
-report(res, what = "all")
-report(res, what = "individual")
-report(res, what = "detailed")
-report(res, what = "summary")
-
-report(res, what = "review")
-
-report(res, what = "setup")
-
-
-extract(res, "cutscore")
-
-res0 <- update(res, "R0-All" = c(-1, 0.5))
-
-boot_res <- boostrapping(res, "R0-All")
-
-summary(boot_res)
-
-extract(boot_res)
-
+# =============================================================================
+# EmStanS overall test: the functions a user calls
+# =============================================================================
+#
+# Run from the package root, section by section. Uses the installed package
+# (devtools::install() first), so only exported functions are used here.
+# For the step-by-step internals see prerun/run_through.R.
+#
+# Each section prints its result; check() lines stop with a message if
+# something is wrong.
 
 library(EmStanS)
 
-fake_data <- genFakeDataSet(ngca = 3,
-                            cor_val = 0.2,
-                            n = 30,
-                            nlevel = 3,
-                            ntable = 5,
-                            npanelist = 5,
-                            sdinp = 1,
-                            ecinp = 0,
-                            # ndomain = NULL,
-                            100,300)
+check <- function(ok, what) {
+  if (!isTRUE(ok)) stop("CHECK FAILED: ", what, call. = FALSE)
+  message("ok: ", what)
+}
 
-options(warn = 2)
-res <- emstans(data = fake_data,
-               tests = c(1,2),
-               targets = "ALD",
-               WESS = T,
-               gamest = T,
-               median = "modal",
-               loc = "Loc_RP50",
-               domain = "GCA")
+xlsx <- "prerun/data/example_file/aasr_emstans_file_19October2024 (2).xlsx"
+out_dir <- file.path(tempdir(), "emstans_review")
+dir.create(out_dir, showWarnings = FALSE)
 
-lifecycle::last_lifecycle_warnings()
+# 1. Main function and print() --------------------------------------------------
 
-report(res, what = "detailed")
-report(res, what = "summary")
+t0 <- Sys.time()
+res <- emstans(filePath = xlsx, loc = "RP67", WESS = TRUE)
+Sys.time() - t0                       # about a second
+
+res                                   # print(): settings and modal cut scores
+print(res)                            # same thing, explicitly
+summary(res)                          # modal / median / average + agreement per cut
+
+check(inherits(res, "ESS"), "emstans() returns an ESS object")
+check(length(extract(res, "cutscore")) == 7, "7 grades (R0-R6)")
+check(all(vapply(extract(res, "cutscore"), function(x) identical(names(x), c("M", "L")), TRUE)),
+      "cuts are labelled M and L")
+
+## Count method and GAM smoothing
+res_c <- emstans(filePath = xlsx, loc = "RP67", WESS = FALSE)
+res_c
+res_g <- emstans(filePath = xlsx, loc = "RP67", gamest = TRUE)
+res_g
+
+## Subsets of grades and domain units
+emstans(filePath = xlsx, loc = "RP67", grade = c("R1", "R2"))
+emstans(filePath = xlsx, loc = "RP67", grade = 1:2,
+        domain = c("GCA", "Domain"), select_domain = c("VOC", "COM"))
+
+# 2. extract() -------------------------------------------------------------------
+
+extract(res, "cutscore")                       # named list, one vector per unit
+ind <- extract(res, "individual")              # panelist, modal, median, average
+names(ind)
+head(ind$panelist)
+ind$modal[ind$modal$table == "All", ]
+det <- extract(res, "detailed")                # agreement summary + crosstab
+det$agreement
+head(det$crosstab)
+head(extract(res, "summary"))                  # impact
+head(extract(res, "review"))                   # item review
+head(extract(res, "profile")[["R1-All"]])      # inconsistency of every candidate cut
+str(extract(res), max.level = 1)               # "all"
+
+check(is.factor(extract(res, "review")$aligned) &&
+        identical(levels(extract(res, "review")$aligned), c("E", "M", "L")),
+      "labels are ordered factors E < M < L")
+
+# 3. report() --------------------------------------------------------------------
+# In RStudio these open in the Viewer. They are also saved to out_dir.
+
+rep_all <- report(res)                         # all sections
+rep_ind <- report(res, what = "individual")
+rep_det <- report(res, what = "detailed")
+rep_sum <- report(res, what = "summary")
+rep_rev <- report(res, what = "review")
+rep_set <- report(res, what = "setup")
+if (interactive()) print(rep_all)
+htmltools::save_html(rep_all, file.path(out_dir, "report_all.html"))
+message("report saved to ", file.path(out_dir, "report_all.html"))
+
+# 4. plot() -------------------------------------------------------------------------
+
+plot(res, "profile", "R1-All")                 # inconsistency profile with the cuts
+imp <- plot(res, "impact")                     # list: cut_scores (+ percents with examinees)
+imp$cut_scores
+ggplot2::ggsave(file.path(out_dir, "profile_R1.png"), plot(res, "profile", "R1-All"),
+                width = 9, height = 5)
+
+# 5. update(): manual cut scores ------------------------------------------------------
+
+res_m <- update(res, `R1-All` = c(-0.9, 0.4), `R0-All` = c(-2.5, -1.2))  # any order
+res_m                                          # header lists the manual units
+check(identical(unname(extract(res_m, "cutscore")[["R1-All"]]), c(-0.9, 0.4)),
+      "manual cuts assigned by name")
+try(update(res, `R9-All` = c(1, 2)))           # unknown unit -> error listing units
+try(update(res, `R1-All` = 0.5))               # wrong number of cuts -> error
+
+# 6. bootstrapping() -------------------------------------------------------------------
+
+b <- bootstrapping(res, "R3-All", boot_num = 30, seed = 1)
+b                                              # print.bootESS(): summary per cut
+summary(b)
+head(extract(b, "draws"))
+extract(b, "plot")
+if (interactive()) print(report(b))
+
+# 7. Input other than the Excel workbook --------------------------------------------------
+
+d <- ess_read_excel(xlsx)
+d                                              # print.ess_data()
+
+## 7a. CSV files with different column names, mapped by name and by position
+r <- d$ratings
+csv_ratings <- data.frame(Rater = r$panelist, Grade = r$grade, Item = r$item_id,
+                          Judgment = r$label)
+csv_items <- d$items[, c("grade", "item_id", "domain", "order", "RP67")]
+names(csv_items) <- c("Grade", "ItemCode", "Domain", "Order_of_Difficulty", "RP67")
+utils::write.csv(csv_ratings, file.path(out_dir, "ratings.csv"), row.names = FALSE)
+utils::write.csv(csv_items, file.path(out_dir, "items.csv"), row.names = FALSE)
+
+d_csv <- ess_data(
+  ratings = file.path(out_dir, "ratings.csv"),
+  items   = file.path(out_dir, "items.csv"),
+  levels  = c("E", "M", "L"),
+  ec      = d$grades$ec[1],
+  columns = list(ratings = list(panelist = "Rater", item_id = 3, level = "Judgment"),
+                 items   = list(item_id = "ItemCode")),
+  quiet = FALSE)
+res_csv <- emstans(data = d_csv, loc = "RP67")
+check(isTRUE(all.equal(extract(res_csv, "cutscore"), extract(res, "cutscore"))),
+      "CSV input gives the same cut scores as the workbook")
+
+## 7b. Custom labels (here: rename E/M/L)
+r2 <- d$ratings
+r2$label <- c(E = "Emerging", M = "Meeting", L = "Leading")[r2$label]
+d_lab <- ess_data(r2[c("grade", "round", "table", "panelist", "item_id", "label")], d$items,
+                  levels = c("Emerging", "Meeting", "Leading"),
+                  columns = list(ratings = list(level = "label")))
+res_lab <- emstans(data = d_lab, loc = "RP67")
+res_lab
+check(identical(names(extract(res_lab, "cutscore")[[1]]), c("Meeting", "Leading")),
+      "custom labels in the output")
+
+## 7c. Two rounds: each grade x round is its own unit
+r_round2 <- d$ratings; r_round2$round <- "2"
+set.seed(2); i <- sample(nrow(r_round2), 200)
+r_round2$label[i] <- sample(c("E", "M", "L"), 200, TRUE)
+d_rounds <- ess_data(rbind(d$ratings, r_round2)[c("grade", "round", "table", "panelist", "item_id", "label")],
+                     d$items, levels = c("E", "M", "L"),
+                     columns = list(ratings = list(level = "label")))
+res_rounds <- emstans(data = d_rounds, loc = "RP67")
+res_rounds
+check(length(extract(res_rounds, "cutscore")) == 14, "7 grades x 2 rounds")
+
+## 7d. Simulated data with several panelists and tables
+fake <- genFakeDataSet(ngca = 2, cor_val = 0.6, n = 30, nlevel = 3, ntable = 2,
+                       npanelist = 3, sdinp = 1, ecinp = 0, 100, 300)
+res_fake <- emstans(data = fake, loc = "Loc_RP50")
+res_fake
+extract(res_fake, "individual")$median
+
+# 8. Input checks ------------------------------------------------------------------------
+
+try(emstans(filePath = xlsx, loc = "RP99"))                       # unknown location column
+raw <- lapply(readxl::excel_sheets(xlsx), function(s) readxl::read_excel(xlsx, sheet = s))
+validateData(raw)                                                 # compatibility wrapper
+raw[[3]] <- raw[[3]][-1, ]
+validateData(raw)                                                 # reports the missing rating
+
+message("\nAll checks passed. Files written to ", out_dir)
