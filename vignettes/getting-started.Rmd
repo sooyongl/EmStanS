@@ -43,7 +43,6 @@ library(EmStanS)
 ```
 
 ```{r eval = T}
-# data <- read.csv(filePath)
 fake_data <- genFakeDataSet(ngca = 3, 
                cor_val = 0.2,
                n = 30,
@@ -63,16 +62,52 @@ fake_data
 
 ```{r eval = T}
 res <- emstans(data = fake_data,
-               grade = c(1,2),
-               targets = "ALD",
-               WESS = T,
-               gamest = F,
-               median = "modal",
-               loc = "Loc_RP50",
-               domain = "GCA")
+               grades = c(1, 2),
+               location = "Loc_RP50",
+               method = "weight",
+               smooth = FALSE)
 
 ```
 
+
+## Your own data
+
+An EmStanS Excel workbook (sheets Setup, Panelists, Ratings, ItemMetaData,
+ExamineeMetaData) can be passed directly:
+
+```{r}
+res <- emstans("my_study.xlsx", location = "RP67")
+```
+
+Data in other layouts, such as CSV files, go through `ess_data()`. Only
+ratings and items are required. Level labels, SD and EC can come from a
+setup table, from arguments, or both (arguments win). Columns whose names
+differ from the defaults are mapped by name or by position:
+
+```{r}
+d <- ess_data(
+  ratings = "ratings.csv",
+  items   = "items.csv",
+  levels  = c("Basic", "Intermediate", "Advanced"),  # lowest to highest
+  ec      = 0.3,
+  columns = list(ratings = list(panelist = "Rater", level = 8))
+)
+d                      # overview of what was read
+res <- emstans(data = d, location = "RP50")
+```
+
+Level labels may also differ by grade:
+`levels = list(R1 = c("E", "M", "L"), R2 = c("B", "P", "A"))`. Every table,
+plot and report shows the labels, in level order.
+
+When the ratings include several rounds, each grade and round is analysed
+separately, and results are named by unit, for example `R1-All Round 2`.
+
+## Plots
+
+```{r eval = T, fig.height = 4}
+plot(res, "profile", "M1-All")   # inconsistency profile of the modal result
+```
 
 ## Summary
 

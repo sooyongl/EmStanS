@@ -35,7 +35,6 @@ library(EmStanS)
 ```
 
 ```{r eval = T}
-# data <- read.csv(filePath)
 fake_data <- genFakeDataSet(ngca = 3, 
                cor_val = 0.2,
                n = 30,
@@ -55,13 +54,10 @@ fake_data
 
 ```{r eval = T}
 res <- emstans(data = fake_data,
-               grade = c(1,2),
-               targets = "ALD",
-               WESS = T,
-               gamest = F,
-               median = "modal",
-               loc = "Loc_RP50",
-               domain = "GCA")
+               grades = c(1, 2),
+               location = "Loc_RP50",
+               method = "weight",
+               smooth = FALSE)
 
 ```
 
