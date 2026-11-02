@@ -23,3 +23,13 @@ A ggplot object (for `"impact"`, a list of ggplot objects).
 \description{
 Plot an ESS result
 }
+\examples{
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+res <- emstans(data = sim, location = "Loc_RP50")
+plot(res)
+plot(res, type = "profile", unit = "M2-All")
+plot(res, type = "impact")
+}

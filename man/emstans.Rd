@@ -74,18 +74,22 @@ modal result of each grade, the function also reports agreement between
 aligned and empirical levels, an item review, and impact data.
 }
 \examples{
-\dontrun{
-res <- emstans("study.xlsx", location = "RP67")
+# Simulated study: 2 grades, 2 tables of 3 panelists, 30 items per grade
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+res <- emstans(data = sim, location = "Loc_RP50")
 res
 extract(res, "cutscore")
-report(res)
 
-# ESS-Count, and each content domain separately
-emstans("study.xlsx", method = "count", by_domain = TRUE)
+# ESS-Count, with each content domain also analysed separately
+res_count <- emstans(data = sim, location = "Loc_RP50", method = "count",
+                     by_domain = TRUE)
+names(extract(res_count, "cutscore"))
 
-# CSV input with custom column names and level labels
-d <- ess_data(ratings = "ratings.csv", items = "items.csv",
-              levels = c("Basic", "Intermediate", "Advanced"))
-res <- emstans(data = d, location = "RP50")
-}
+# From an EmStanS Excel workbook (a simulated one ships with the package)
+path <- system.file("extdata", "example_study.xlsx", package = "EmStanS")
+res_xlsx <- emstans(path, location = "Loc_RP50")
+summary(res_xlsx)
 }

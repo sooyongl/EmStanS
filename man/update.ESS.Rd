@@ -21,3 +21,16 @@ Replaces the modal (all tables) cut scores of one or more units and
 recomputes agreement, item review and impact for them. Each cut's page is
 the first item at or above the cut score.
 }
+\examples{
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+res <- emstans(data = sim, location = "Loc_RP50")
+extract(res, "cutscore")
+
+# Set the cuts of grade M1 by hand; agreement, review and impact are updated
+res_manual <- update(res, `M1-All` = c(350, 440))
+extract(res_manual, "cutscore")
+summary(res_manual)
+}

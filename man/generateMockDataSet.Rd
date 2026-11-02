@@ -75,27 +75,24 @@ the data structure expected by
 their own data.
 }
 \examples{
-\dontrun{
-fake_data <- generateMockDataSet(
-  ngca = 3,
-  ntable = 5,
-  npanelist = 5,
-  cor_val = 0.2,
-  nlevel = 3,
-  sdinp = 1,
-  ecinp = 0,
-  n = 30,
-  100,
-  300
-)
+# 2 grades, 2 tables of 3 panelists, 30 items per grade, locations 300-500
+set.seed(1)
+fake_data <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                                 cor_val = 0.7, nlevel = 3, sdinp = 1,
+                                 ecinp = 0, n = 30, 300, 500)
+names(fake_data)
+head(fake_data$rating)
 
 # Three named subdomains
 fake_data <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 4,
-                            cor_val = 0.6, nlevel = 3, sdinp = 1, ecinp = 0,
-                            n = 45, 300, 500,
-                            domains = c("Number", "Algebra", "Geometry"))
+                                 cor_val = 0.6, nlevel = 3, sdinp = 1,
+                                 ecinp = 0, n = 45, 300, 500,
+                                 domains = c("Number", "Algebra", "Geometry"))
 table(fake_data$item_data$GCA, fake_data$item_data$Domain)
 
-# Four subdomains with default names (domains = 4), or none (domains = NULL)
-}
+# Four levels and no subdomains
+fake_data <- generateMockDataSet(ngca = 1, ntable = 2, npanelist = 3,
+                                 cor_val = 0.7, nlevel = 4, sdinp = 1,
+                                 ecinp = 0, n = 40, 300, 500, domains = NULL)
+names(fake_data$item_data)
 }

@@ -47,3 +47,12 @@ Reads the five-sheet EmStanS workbook (Setup, Panelists, Ratings,
 ItemMetaData, ExamineeMetaData) by sheet name, falling back to sheet
 position when a name is not found, and returns [ess_data()].
 }
+\examples{
+# A simulated workbook that ships with the package
+path <- system.file("extdata", "example_study.xlsx", package = "EmStanS")
+readxl::excel_sheets(path)
+d <- ess_read_excel(path)
+d
+res <- emstans(data = d, location = "Loc_RP50")
+extract(res, "cutscore")
+}

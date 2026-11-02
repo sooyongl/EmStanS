@@ -28,6 +28,13 @@ print.ESS <- function(x, ...) {
 #' @param object An object of class `"ESS"`.
 #' @param ... Not used.
 #' @return A data frame, invisibly after printing.
+#' @examples
+#' set.seed(1)
+#' sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+#'                            cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+#'                            n = 30, 300, 500)
+#' res <- emstans(data = sim, location = "Loc_RP50")
+#' summary(res)
 #' @export
 summary.ESS <- function(object, ...) {
   x <- object; tb <- ess_tables(x)
@@ -63,6 +70,16 @@ extract <- function(x, ...) {
 #' @param ... Not used.
 #' @return A data frame or a named list of data frames. Level columns hold
 #'   the level labels as ordered factors.
+#' @examples
+#' set.seed(1)
+#' sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+#'                            cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+#'                            n = 30, 300, 500)
+#' res <- emstans(data = sim, location = "Loc_RP50")
+#' extract(res, "cutscore")
+#' head(extract(res, "review"))
+#' head(extract(res, "profile")[["M1-All"]])
+#' names(extract(res))
 #' @export
 extract.ESS <- function(x, what = "all", ...) {
   what <- match.arg(what, c("all", "cutscore", "individual", "detailed", "summary",
@@ -92,6 +109,18 @@ extract.ESS <- function(x, what = "all", ...) {
 #'   by unit as in `extract(object, "cutscore")`, for example
 #'   `` update(res, `R1-All` = c(-0.9, 0.4)) ``.
 #' @return An updated object of class `"ESS"`.
+#' @examples
+#' set.seed(1)
+#' sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+#'                            cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+#'                            n = 30, 300, 500)
+#' res <- emstans(data = sim, location = "Loc_RP50")
+#' extract(res, "cutscore")
+#'
+#' # Set the cuts of grade M1 by hand; agreement, review and impact are updated
+#' res_manual <- update(res, `M1-All` = c(350, 440))
+#' extract(res_manual, "cutscore")
+#' summary(res_manual)
 #' @export
 update.ESS <- function(object, ...) {
   updates <- list(...)

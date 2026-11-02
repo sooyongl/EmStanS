@@ -63,13 +63,34 @@ SD, EC) can come from a setup table, from arguments, or both, with
 arguments taking precedence.
 }
 \examples{
-\dontrun{
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+
+# Data frames with the default column names
+d <- ess_data(ratings = sim$rating, items = sim$item_data,
+              setup = sim$setup, examinees = sim$examineedata_data)
+d
+
+# CSV files with other column names and level labels, and no setup table
+ratings <- sim$rating
+names(ratings)[names(ratings) == "Panelist"] <- "Rater"
+names(ratings)[names(ratings) == "ALD"] <- "Judgment"
+ratings$Judgment <- c(Level1 = "Basic", Level2 = "Proficient",
+                      Level3 = "Advanced")[ratings$Judgment]
+ratings_csv <- tempfile(fileext = ".csv")
+items_csv <- tempfile(fileext = ".csv")
+write.csv(ratings, ratings_csv, row.names = FALSE)
+write.csv(sim$item_data, items_csv, row.names = FALSE)
+
 d <- ess_data(
-  ratings = "ratings.csv",
-  items   = "items.csv",
-  levels  = c("Basic", "Intermediate", "Advanced"),
+  ratings = ratings_csv,
+  items   = items_csv,
+  levels  = c("Basic", "Proficient", "Advanced"),
   columns = list(ratings = list(panelist = "Rater", level = "Judgment"))
 )
-res <- emstans(data = d, loc = "RP67")
-}
+res <- emstans(data = d, location = "Loc_RP50")
+extract(res, "cutscore")
+unlink(c(ratings_csv, items_csv))
 }

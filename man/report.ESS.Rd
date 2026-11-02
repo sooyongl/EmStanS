@@ -26,3 +26,13 @@ A browsable HTML object.
 Builds an HTML page (shown in the RStudio viewer or a browser) with the
 results of [emstans()]. Level labels from the input are used throughout.
 }
+\examples{
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+res <- emstans(data = sim, location = "Loc_RP50")
+rep <- report(res)
+rep_summary <- report(res, what = "summary")
+if (interactive()) rep
+}

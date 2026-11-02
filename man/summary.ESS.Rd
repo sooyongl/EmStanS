@@ -19,3 +19,11 @@ One row per unit and cut level with the modal, median and average cut
 scores (all tables), and the agreement between aligned and empirical
 levels for the modal result.
 }
+\examples{
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+res <- emstans(data = sim, location = "Loc_RP50")
+summary(res)
+}

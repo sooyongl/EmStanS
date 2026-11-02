@@ -29,6 +29,20 @@ bootstrapping <- function(x, ...) {
 #'   `gca_name` (now `unit`) and `boot_num` (now `n`).
 #' @return An object of class `"bootESS"`: use `print()`, `summary()`,
 #'   `extract()`, `report()`.
+#' @examples
+#' set.seed(1)
+#' sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+#'                            cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+#'                            n = 30, 300, 500)
+#' res <- emstans(data = sim, location = "Loc_RP50")
+#' boot <- bootstrapping(res, unit = "M1-All", n = 50, seed = 1)
+#' boot
+#' head(extract(boot, "draws"))
+#' extract(boot, "plot")
+#' if (interactive()) report(boot)
+#'
+#' # The jittered-grid bootstrap
+#' bootstrapping(res, unit = "M1-All", n = 10, seed = 1, grid = "jittered")
 #' @export
 bootstrapping.ESS <- function(x, unit, n = 100, seed = NULL,
                               grid = c("items", "jittered"), ...) {

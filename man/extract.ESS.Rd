@@ -27,3 +27,14 @@ A data frame or a named list of data frames. Level columns hold
 \description{
 Extract tables from an ESS result
 }
+\examples{
+set.seed(1)
+sim <- generateMockDataSet(ngca = 2, ntable = 2, npanelist = 3,
+                           cor_val = 0.7, nlevel = 3, sdinp = 1, ecinp = 0,
+                           n = 30, 300, 500)
+res <- emstans(data = sim, location = "Loc_RP50")
+extract(res, "cutscore")
+head(extract(res, "review"))
+head(extract(res, "profile")[["M1-All"]])
+names(extract(res))
+}
