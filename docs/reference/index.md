@@ -1,0 +1,28 @@
+# Package index
+
+## All functions
+
+- [`bootstrapping()`](https://sooyongl.github.io/EmStanS/reference/bootstrapping.ESS.md)
+  : Bootstrap the modal cut scores of one unit
+- [`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md) :
+  Run Embedded Standard Setting Analysis
+- [`ess_data()`](https://sooyongl.github.io/EmStanS/reference/ess_data.md)
+  : Prepare Embedded Standard Setting input data
+- [`ess_locations()`](https://sooyongl.github.io/EmStanS/reference/ess_locations.md)
+  : Item locations at a response probability
+- [`ess_read_excel()`](https://sooyongl.github.io/EmStanS/reference/ess_read_excel.md)
+  : Read an EmStanS Excel workbook
+- [`extract()`](https://sooyongl.github.io/EmStanS/reference/extract.ESS.md)
+  : Extract tables from an ESS result
+- [`generateMockDataSet()`](https://sooyongl.github.io/EmStanS/reference/generateMockDataSet.md)
+  : Generate a Fake Data Set for Embedded Standard Setting
+- [`plot(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/plot.ESS.md)
+  : Plot an ESS result
+- [`report()`](https://sooyongl.github.io/EmStanS/reference/report.ESS.md)
+  : HTML report of an ESS result
+- [`summary(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/summary.ESS.md)
+  : Summarise an ESS result
+- [`update(`*`<ESS>`*`)`](https://sooyongl.github.io/EmStanS/reference/update.ESS.md)
+  : Set cut scores manually
+- [`validateData()`](https://sooyongl.github.io/EmStanS/reference/validateData.md)
+  : Check input data

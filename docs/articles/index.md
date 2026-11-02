@@ -1,0 +1,35 @@
+# Articles
+
+### Articles
+
+- [Getting started with
+  EmStanS](https://sooyongl.github.io/EmStanS/articles/getting-started.md):
+
+  Install EmStanS, prepare the inputs, estimate cut scores and read the
+  results.
+
+- [How embedded standard setting
+  works](https://sooyongl.github.io/EmStanS/articles/ess-method.md):
+
+  The ESS-Count and ESS-Weight criteria worked by hand on a 12-item
+  example, with the mathematics behind every result EmStanS reports.
+
+- [Setting cut scores
+  manually](https://sooyongl.github.io/EmStanS/articles/manual-cut-scores.md):
+
+  Replace estimated cut scores with your own, and see how much
+  consistency and impact change.
+
+- [Bootstrapping cut
+  scores](https://sooyongl.github.io/EmStanS/articles/bootstrapping.md):
+
+  How much would the cut scores change with a different set of items?
+  The item bootstrap, how to read it, and the earlier jittered-grid
+  version.
+
+- [Item
+  locations](https://sooyongl.github.io/EmStanS/articles/item-locations.md):
+
+  What an item location is, why it drives ESS cut scores, how it is
+  computed, and what to consider under each IRT model. Covers
+  ess_locations().

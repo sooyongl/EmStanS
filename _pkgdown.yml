@@ -1,0 +1,22 @@
+title: EmStanS
+news:
+  cran_dates: false
+url: https://sooyongl.github.io/EmStanS
+template:
+  bootstrap: 5
+  bootswatch: sandstone
+  math-rendering: mathjax
+navbar:
+  structure:
+    left: [intro, reference, articles, examples, news]
+    right: [github]
+
+articles:
+  - title: Articles
+    navbar: Articles
+    contents:
+      - getting-started
+      - ess-method
+      - manual-cut-scores
+      - bootstrapping
+      - item-locations
