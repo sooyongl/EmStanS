@@ -119,8 +119,8 @@ the RP fixes *where* that item sits on the scale.
 The example below makes this concrete. Forty Rasch items are aligned to
 “Proficient or above” or “below Proficient”. A minimal version of the
 ESS-Weight criterion finds the cut, here only for illustration;
-[`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md) does
-this on real data.
+[`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md)
+does this on real data.
 
 ``` r
 # ESS-Weight for one cut: candidates are the item locations, ties go to the
@@ -601,8 +601,8 @@ ess_locations(pars, D = 1.702, slope = 50, intercept = 500)[, c("Item_ID", "thet
 
 Use the same conversion as for the examinee scores, and give the
 standard deviation and EC value used by
-[`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md) on
-the same metric as the locations. ESS-Weight divides distances by the
+[`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md)
+on the same metric as the locations. ESS-Weight divides distances by the
 SD, so a \\\theta\\-metric location with a scale-score SD makes all
 weights nearly equal.
 

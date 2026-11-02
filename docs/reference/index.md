@@ -4,8 +4,8 @@
 
 - [`bootstrapping()`](https://sooyongl.github.io/EmStanS/reference/bootstrapping.ESS.md)
   : Bootstrap the modal cut scores of one unit
-- [`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md) :
-  Run Embedded Standard Setting Analysis
+- [`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md)
+  : Run Embedded Standard Setting Analysis
 - [`ess_data()`](https://sooyongl.github.io/EmStanS/reference/ess_data.md)
   : Prepare Embedded Standard Setting input data
 - [`ess_locations()`](https://sooyongl.github.io/EmStanS/reference/ess_locations.md)

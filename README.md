@@ -19,7 +19,7 @@ library(EmStanS)
 ```
 
 ``` r
-fake_data <- genFakeDataSet(ngca = 3, 
+fake_data <-  generateMockDataSet(ngca = 3, 
                cor_val = 0.2,
                n = 30,
                nlevel = 3,
@@ -57,9 +57,9 @@ fake_data
 #>   GCA   Subject Grade Round Table Panelist Item_ID ALD   
 #>   <chr> <chr>   <chr> <dbl> <chr> <chr>    <chr>   <chr> 
 #> 1 M1    Math    1         1 T1    M1.T1.1  M1_1    Level1
-#> 2 M1    Math    1         1 T1    M1.T1.1  M1_2    Level2
-#> 3 M1    Math    1         1 T1    M1.T1.1  M1_3    Level2
-#> 4 M1    Math    1         1 T1    M1.T1.1  M1_4    Level1
+#> 2 M1    Math    1         1 T1    M1.T1.1  M1_2    Level1
+#> 3 M1    Math    1         1 T1    M1.T1.1  M1_3    Level1
+#> 4 M1    Math    1         1 T1    M1.T1.1  M1_4    Level2
 #> 5 M1    Math    1         1 T1    M1.T1.1  M1_5    Level2
 #> # ℹ 2,245 more rows
 #> 
@@ -67,23 +67,23 @@ fake_data
 #> # A tibble: 90 × 7
 #>   GCA   Domain Item_ID Total_points Point Order_of_Difficulty Loc_RP50
 #>   <chr> <chr>  <chr>          <dbl> <dbl>               <int>    <dbl>
-#> 1 M1    Alg    M1_1               1     1                   1     100.
-#> 2 M1    Geom   M1_2               1     1                   2     100.
-#> 3 M1    Alg    M1_3               1     1                   3     100.
-#> 4 M1    Calc   M1_4               1     1                   4     102.
-#> 5 M1    Alg    M1_5               1     1                   5     102.
+#> 1 M1    Prob   M1_1               1     1                   1     104.
+#> 2 M1    Calc   M1_2               1     1                   2     115.
+#> 3 M1    Prob   M1_3               1     1                   3     117.
+#> 4 M1    Prob   M1_4               1     1                   4     133.
+#> 5 M1    Prob   M1_5               1     1                   5     138.
 #> # ℹ 85 more rows
 #> 
 #> $examineedata_data
-#> # A tibble: 680 × 3
+#> # A tibble: 642 × 3
 #>   score  freq Grade
 #>   <int> <int> <chr>
-#> 1    84     3 M1   
-#> 2    85     4 M1   
-#> 3    86    12 M1   
-#> 4    87     4 M1   
-#> 5    88     4 M1   
-#> # ℹ 675 more rows
+#> 1    91     8 M1   
+#> 2    92     6 M1   
+#> 3    93     5 M1   
+#> 4    94     3 M1   
+#> 5    95     9 M1   
+#> # ℹ 637 more rows
 
 # Or you can use your own data structured by the following table.
 ```
@@ -101,10 +101,10 @@ res <- emstans(data = fake_data,
 ``` r
 summary(res)
 #>     unit cut_level modal median average agreement weighted_kappa
-#> 1 M1-All    Level2 103.1  118.2  126.22     0.633          0.337
-#> 2 M1-All    Level3 283.4  203.7  222.21     0.633          0.337
-#> 3 M2-All    Level2 155.7  180.9  194.66     0.633          0.321
-#> 4 M2-All    Level3 313.5  300.9  299.17     0.633          0.321
+#> 1 M1-All    Level2 138.4  153.9  152.06     0.633          0.260
+#> 2 M1-All    Level3 267.8  225.0  224.72     0.633          0.260
+#> 3 M2-All    Level2 164.5  186.0  188.54     0.700          0.466
+#> 4 M2-All    Level3 305.4  297.4  281.12     0.700          0.466
 ```
 
 ## Report

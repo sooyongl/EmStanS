@@ -2,8 +2,8 @@
 
 ## EmStanS 0.1.0
 
-- First release. `EmStanS` implements Embedded Standard Setting (ESS): it
-  estimates cut scores from panelists’ item–level alignments and item
+- First release. `EmStanS` implements Embedded Standard Setting (ESS):
+  it estimates cut scores from panelists’ item–level alignments and item
   locations.
 
 - Cut scores can be estimated with either criterion: ESS-Count (number

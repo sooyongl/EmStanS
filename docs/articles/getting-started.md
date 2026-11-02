@@ -2,13 +2,13 @@
 
 `EmStanS` estimates cut scores with **embedded standard setting** (ESS;
 Lewis & Cook, 2020). Panelists align each item to the performance level
-whose descriptor it matches. `EmStanS` then places each cut score where the
-items’ locations on the reporting scale agree best with those
+whose descriptor it matches. `EmStanS` then places each cut score where
+the items’ locations on the reporting scale agree best with those
 alignments. This article covers the basic workflow. [How embedded
 standard setting
-works](https://sooyongl.github.io/EmStanS/articles/ess-method.md) explains
-what is computed and why, with a worked example and the underlying
-mathematics.
+works](https://sooyongl.github.io/EmStanS/articles/ess-method.md)
+explains what is computed and why, with a worked example and the
+underlying mathematics.
 
 ## Installation
 
@@ -126,8 +126,8 @@ res
 #> Use extract() for tables, report() for the full report.
 ```
 
-Each grade is analysed separately. For each one, `EmStanS` estimates a cut
-score for every panelist and for the **modal** alignment across
+Each grade is analysed separately. For each one, `EmStanS` estimates a
+cut score for every panelist and for the **modal** alignment across
 panelists, per table and for all tables together. The printed cut scores
 are the modal cuts for all tables. Each cut is named by the level it
 opens: `Level2` is the lowest score in Level 2.

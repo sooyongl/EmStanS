@@ -1,10 +1,10 @@
 # How embedded standard setting works
 
-This article explains what `EmStanS` computes and why. It works through a
-12-item example by hand, checks every hand calculation against `EmStanS`,
-and then states the mathematical properties of the two criteria,
-ESS-Count and ESS-Weight, with short proofs. For day-to-day use of the
-package, start with [Getting
+This article explains what `EmStanS` computes and why. It works through
+a 12-item example by hand, checks every hand calculation against
+`EmStanS`, and then states the mathematical properties of the two
+criteria, ESS-Count and ESS-Weight, with short proofs. For day-to-day
+use of the package, start with [Getting
 started](https://sooyongl.github.io/EmStanS/articles/getting-started.md).
 [Manual cut
 scores](https://sooyongl.github.io/EmStanS/articles/manual-cut-scores.md),
@@ -108,8 +108,8 @@ scores$Freq <- round(400 * dnorm(scores$Score, mean = 255, sd = 25))
 
 [`ess_data()`](https://sooyongl.github.io/EmStanS/reference/ess_data.md)
 combines the inputs, and
-[`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md) runs
-both criteria:
+[`emstans()`](https://sooyongl.github.io/EmStanS/reference/emstans.md)
+runs both criteria:
 
 ``` r
 d <- ess_data(ratings, items, examinees = scores, levels = labels)
@@ -237,9 +237,9 @@ I03 at 231 is now below the cut (distance 8): \\C_2 = 3\\ and \\W_2 =
 ## 6 Step 3: the profile and the cut
 
 The **inconsistency profile** evaluates \\C_k\\ and \\W_k\\ at every
-candidate. `EmStanS` uses the item locations themselves as candidates (the
-next section shows that nothing is lost). A direct implementation of the
-definitions takes a few lines:
+candidate. `EmStanS` uses the item locations themselves as candidates
+(the next section shows that nothing is lost). A direct implementation
+of the definitions takes a few lines:
 
 ``` r
 ess_by_hand <- function(b, a, k, sd = 1) {
@@ -546,12 +546,12 @@ sum(abs(mi$aligned - mi$operational))
 | Ties | frequent (integer values), broken by the weight | at most two neighbouring items, broken by the count |
 | Location scale | order only, except weight tie-breaks | order only |
 
-ESS-Weight is the default in `EmStanS`. Its cuts are stable: changing one
-item’s alignment changes \\n\_{\<k}\\ by at most one, so it moves a cut
-by at most two pages. ESS-Count responds to *where* the misaligned items
-are, so it is the criterion to look at when the question is which items
-the panelists placed out of order. Reporting both is cheap, and large
-differences between them are worth a look at the item review.
+ESS-Weight is the default in `EmStanS`. Its cuts are stable: changing
+one item’s alignment changes \\n\_{\<k}\\ by at most one, so it moves a
+cut by at most two pages. ESS-Count responds to *where* the misaligned
+items are, so it is the criterion to look at when the question is which
+items the panelists placed out of order. Reporting both is cheap, and
+large differences between them are worth a look at the item review.
 
 ## 8 From cut scores to the other results
 
@@ -663,12 +663,12 @@ extract(res_ec, "detailed")$agreement
 
 Every panelist’s own alignments go through Steps 2 and 3, giving
 panelist cuts \\\hat c\_{jk}\\ with their pages. For each table and for
-all tables, `EmStanS` reports two summaries of them. The **median** cut is
-the cut score at the middle page (the mean of the two middle panelists’
-cut scores when \\J\\ is even), which equals the median of the panelist
-cut scores. The **average** cut is \\\bar c_k = \frac1J \sum_j \hat
-c\_{jk}\\, and its page is that of the panelist whose cut is closest to
-it.
+all tables, `EmStanS` reports two summaries of them. The **median** cut
+is the cut score at the middle page (the mean of the two middle
+panelists’ cut scores when \\J\\ is even), which equals the median of
+the panelist cut scores. The **average** cut is \\\bar c_k = \frac1J
+\sum_j \hat c\_{jk}\\, and its page is that of the panelist whose cut is
+closest to it.
 
 ``` r
 pan[, c("panelist", "cut_level", "page", "cut_score", "count", "weight")]
@@ -741,8 +741,8 @@ apply to them.
 ## 10 How EmStanS computes the profiles
 
 Evaluating the definitions directly costs \\O(n^2)\\ per level: \\n\\
-candidates, each checked against \\n\\ items. `EmStanS` sorts the upper and
-lower locations once and keeps their cumulative sums \\S_U\\ and
+candidates, each checked against \\n\\ items. `EmStanS` sorts the upper
+and lower locations once and keeps their cumulative sums \\S_U\\ and
 \\S_L\\. For a candidate \\c\\, a binary search gives \\u = \\\\U: b \<
 c\\\\ and \\\lambda = \\\\L: b \< c\\\\, and then
 
