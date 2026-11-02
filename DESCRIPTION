@@ -6,10 +6,8 @@ Authors@R:
     c(person(given = "Daniel",
              family = "Lewis",
              role = c("aut", "cph")),
-      person(given = "Sooyong",
-             family = "Lee",
-             email = "sooyongl09@utexas.edu",
-             role = c("aut","cre")),
+      person(given = "Sooyong", family = "Lee",
+             email = "sooyongl09@gmail.com", role = c("aut", "cre")),
       person(given = "Seung",
              family = "Choi",
              role = c("aut"))
@@ -39,14 +37,11 @@ Imports:
     tibble,
     utils
 Suggests:
-    knitr,
-    rmarkdown,
     testthat (>= 3.0.0),
     withr
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
 Config/testthat/edition: 3
 Config/Needs/website: quarto

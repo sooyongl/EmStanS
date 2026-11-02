@@ -23,11 +23,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Sooyong Lee \email{sooyongl09@utexas.edu}
+\strong{Maintainer}: Sooyong Lee \email{sooyongl09@gmail.com}
 
 Authors:
 \itemize{
-  \item Sooyong Lee \email{sooyongl09@utexas.edu}
+  \item Sooyong Lee \email{sooyongl09@gmail.com}
   \item Daniel Lewis [copyright holder]
   \item Seung Choi
 }
